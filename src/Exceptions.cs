@@ -1,35 +1,38 @@
 using System;
 
-public class ConversionException : Exception
+namespace VideoConverter
 {
-    public ConversionException()
+    public class ConversionException : Exception
     {
+        public ConversionException()
+        {
+        }
+
+        public ConversionException(string message)
+            : base(message)
+        {
+        }
+
+        public ConversionException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
     }
 
-    public ConversionException(string message)
-        : base(message)
+    public class VideoFormatException : Exception
     {
-    }
+        public VideoFormatException()
+        {
+        }
 
-    public ConversionException(string message, Exception inner)
-        : base(message, inner)
-    {
-    }
-}
+        public VideoFormatException(string message)
+            : base(message)
+        {
+        }
 
-public class VideoFormatException : Exception
-{
-     public VideoFormatException()
-    {
-    }
-
-    public VideoFormatException(string message)
-        : base(message)
-    {
-    }
-
-    public VideoFormatException(string message, Exception inner)
-        : base(message, inner)
-    {
+        public VideoFormatException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
     }
 }
