@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace VideoConverter
 {
@@ -23,17 +24,27 @@ namespace VideoConverter
                 {
                     var file = parameters[0];
                     var outputFormat = parameters[1];
-                    
-                    if (Uri.IsWellFormedUriString(file, UriKind.RelativeOrAbsolute))
+
+                    var extension = Path.GetExtension(file).Replace(".", "");
+
+                    if (extension == outputFormat)
                     {
-                        Converter.ConvertVideoFromUrl(file, outputFormat);
+                        exitCode = ExitCode.Error;
+                        Console.WriteLine("\nOutput and input formats are the same.");
                     }
                     else
                     {
-                        Converter.ConvertVideoFromFile(file, outputFormat);
+                        if (Uri.IsWellFormedUriString(file, UriKind.RelativeOrAbsolute))
+                        {
+                            Converter.ConvertVideoFromUrl(file, outputFormat);
+                        }
+                        else
+                        {
+                            Converter.ConvertVideoFromFile(file, outputFormat);
+                        }
+
+                        exitCode = ExitCode.Success;
                     }
-      
-                    exitCode = ExitCode.Success;
                 }
                 else
                 {
