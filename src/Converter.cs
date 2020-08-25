@@ -1,5 +1,5 @@
-using System.Net;
 using System;
+using System.Net;
 using System.IO;
 using MediaToolkit;
 using MediaToolkit.Model;
@@ -9,15 +9,12 @@ namespace VideoConverter {
 
         public static void ConvertVideoFromFile(string inputFilePath, string outputFormat)
         {
-            var filename = Path.GetFileNameWithoutExtension(inputFilePath);
-            var folder = Path.GetDirectoryName(inputFilePath);
-
             var inputFile = new MediaFile {
                 Filename = inputFilePath
             };
 
             var outputFile = new MediaFile {
-                Filename = Path.Join(folder, filename) + $".{outputFormat}"
+                Filename = Path.ChangeExtension(inputFilePath, outputFormat)
             };
 
             try
@@ -40,7 +37,11 @@ namespace VideoConverter {
             if (File.Exists(downloadPath))
             {   
                 ConvertVideoFromFile(downloadPath, outputFormat);
-                DeleteVideo(downloadPath);
+                
+                if (File.Exists(downloadPath))
+                {
+                    File.Delete(downloadPath);
+                }
             }
             else
             {
@@ -69,14 +70,5 @@ namespace VideoConverter {
             
             return downloadPath;
         }
-
-        private static void DeleteVideo(string filePath)
-        {
-            if (File.Exists(filePath))
-            {
-                File.Delete(filePath);
-            }
-        }
-
     }
 }

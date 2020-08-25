@@ -6,27 +6,47 @@ namespace VideoConverter
     {
         static void Main(string[] args)
         {   
+            var exitCode = ExitCode.Start;
+
             Console.WriteLine("Give URL or file path and output format");
             Console.WriteLine("Example: https://thissite.com/video.webm mp4");
-            Console.Write("\nInput: ");
-            var input = Console.ReadLine();
-
-            var parameters = input.Split(" ", StringSplitOptions.None);
-
-            if (parameters.Length > 0 && parameters.Length <= 2)
+        
+            while (exitCode != ExitCode.Success)
             {
-                var file = parameters[0];
-                var outputFormat = parameters[1];
-                
-                if (new Uri(file).IsFile)
+
+                Console.Write("\nInput: ");
+                var input = Console.ReadLine();
+
+                var parameters = input.Split(" ", StringSplitOptions.None);
+
+                if (parameters.Length == 2)
                 {
-                    Converter.ConvertVideoFromFile(file, outputFormat);
+                    var file = parameters[0];
+                    var outputFormat = parameters[1];
+                    
+                    if (Uri.IsWellFormedUriString(file, UriKind.RelativeOrAbsolute))
+                    {
+                        Converter.ConvertVideoFromUrl(file, outputFormat);
+                    }
+                    else
+                    {
+                        Converter.ConvertVideoFromFile(file, outputFormat);
+                    }
+      
+                    exitCode = ExitCode.Success;
                 }
                 else
                 {
-                    Converter.ConvertVideoFromUrl(file, outputFormat);
+                    exitCode = ExitCode.Error;
+                    Console.WriteLine("\nIncorrect input. Try again.");
                 }
             }
+        }
+
+        private enum ExitCode {
+            Start = 0,
+            Success,
+            Error
         }
     }
 }
