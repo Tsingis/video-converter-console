@@ -1,2 +1,7 @@
-- Requires FFmpeg installed and added to PATH
-- Download from https://ffmpeg.org/download.html
+# Video converter
+- Supported output formats are mp4, webm and gif
+- Input as file url or path
+
+Requirements:
+
+- Requires [FFmpeg](https://ffmpeg.org/download.html) installed and added to PATH
