@@ -35,6 +35,10 @@ namespace VideoConverter {
             {
                 throw new ConversionException("Conversion failed.", ex);
             }
+            finally {
+                File.Delete(inputFilePath);
+            }
+            
         }
 
         public static async Task ConvertVideoFromUrl(string fileUrl, string outputFormat)
@@ -67,15 +71,15 @@ namespace VideoConverter {
             {
                 using (var client = new WebClient())
                 {
-                     client.DownloadFile(url, downloadPath);
+                    client.DownloadFile(url, downloadPath);
                 }
+                
+                return downloadPath;
             }
             catch (Exception ex)
             {
                 throw new WebException("Download failed.", ex);
             }
-            
-            return downloadPath;
         }
 
         private class VideoFormats
