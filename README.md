@@ -7,6 +7,7 @@ Requirements:
 
 - Requires [FFmpeg](https://ffmpeg.org/download.html) installed and added to PATH
 
-Publish:
+Dev Commands:
 
-- dotnet publish --output ./publish
+- cd VideoConverter | dotnet publish -o ../publish
+- cd Tests | dotnet test

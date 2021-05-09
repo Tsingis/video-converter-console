@@ -13,31 +13,45 @@ namespace VideoConverter
         }
 
         private static async Task MainAsync(string[] args)
-        {   
+        {
             var exitCode = ExitCode.Start;
 
             Console.WriteLine("Give URL or file path and output format");
             Console.WriteLine("Example: https://thissite.com/video.webm mp4");
-        
+
             while (exitCode != ExitCode.Success)
             {
-
                 Console.Write("\nInput: ");
                 var input = Console.ReadLine();
 
                 var parameters = input.Split(" ", StringSplitOptions.None);
 
-                if (parameters.Length == 2)
+                if (parameters.Length > 1 && parameters.Length <= 2)
                 {
                     var file = parameters[0];
-                    var outputFormat = parameters[1];
+                    var outputFormat = VideoFormats.Mp4;
+
+                    if (parameters.Length == 2)
+                    {
+                        var format = parameters[1].ToLower();
+                        if (VideoFormats.IsSupportedVideoFormat(format))
+                        {
+                            outputFormat = format;
+                        }
+                        else
+                        {
+                            exitCode = ExitCode.Error;
+                            Console.WriteLine("\nOutput format is not supported.");
+                            continue;
+                        }
+                    }
 
                     var extension = Path.GetExtension(file).Replace(".", "");
-
                     if (extension == outputFormat)
                     {
                         exitCode = ExitCode.Error;
                         Console.WriteLine("\nOutput and input formats are the same.");
+                        continue;
                     }
                     else
                     {
@@ -57,11 +71,13 @@ namespace VideoConverter
                 {
                     exitCode = ExitCode.Error;
                     Console.WriteLine("\nIncorrect input. Try again.");
+                    continue;
                 }
             }
         }
 
-        private enum ExitCode {
+        private enum ExitCode
+        {
             Start = 0,
             Success,
             Error
