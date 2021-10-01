@@ -8,6 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xabe.FFmpeg" Version="4.4.0" />
+    <PackageReference Include="Xabe.FFmpeg" Version="5.0.2" />
   </ItemGroup>
 </Project>
