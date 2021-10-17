@@ -18,9 +18,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
 
-    <Content Include="Testvideos\*">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content> 
+    <Content Include="Testvideos\*" CopyToOutputDirectory="Always" />
   </ItemGroup>
 
 </Project>

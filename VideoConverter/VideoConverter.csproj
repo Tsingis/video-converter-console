@@ -14,6 +14,6 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="Xabe.FFmpeg" Version="5.0.2" />
 
-    <None Include="config.json" CopyToOutputDirectory="Always" />
+    <Content Include="config.json" CopyToOutputDirectory="Always" />
   </ItemGroup>
 </Project>
