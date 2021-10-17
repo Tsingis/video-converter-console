@@ -5,24 +5,35 @@ using System.Threading.Tasks;
 
 namespace VideoConverter
 {
-    public static class Converter
+    public class Converter
     {
-        public async static Task ConvertVideoFromFile(string inputFilePath, string outputFormat)
+        public string _outputFolder;
+
+        public Converter(string outputFolder)
         {
-            var outputFilePath = Path.ChangeExtension(inputFilePath, outputFormat);
+            _outputFolder = outputFolder;
+        }
+
+        public async Task ConvertVideoFromFile(string inputFilePath, string outputFormat)
+        {
+            var outputFilePath = Utility.GetOutputFilepath(inputFilePath, _outputFolder, outputFormat);
+            if (File.Exists(outputFilePath))
+            {
+                throw new ConversionException("Output file already exists.");
+            }
 
             try
             {
                 IConversion conversion;
                 switch (outputFormat)
                 {
-                    case VideoFormats.Mp4:
+                    case VideoFormat.Mp4:
                         conversion = await FFmpeg.Conversions.FromSnippet.ToMp4(inputFilePath, outputFilePath);
                         break;
-                    case VideoFormats.Webm:
+                    case VideoFormat.Webm:
                         conversion = await FFmpeg.Conversions.FromSnippet.ToWebM(inputFilePath, outputFilePath);
                         break;
-                    case VideoFormats.Gif:
+                    case VideoFormat.Gif:
                         conversion = await FFmpeg.Conversions.FromSnippet.ToGif(inputFilePath, outputFilePath, 1);
                         break;
                     default:
@@ -39,10 +50,9 @@ namespace VideoConverter
             {
                 File.Delete(inputFilePath);
             }
-
         }
 
-        public static async Task ConvertVideoFromUrl(string fileUrl, string outputFormat)
+        public async Task ConvertVideoFromUrl(string fileUrl, string outputFormat)
         {
             var downloadPath = Utility.DownloadVideo(fileUrl);
 

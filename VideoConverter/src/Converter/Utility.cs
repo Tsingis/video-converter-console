@@ -11,10 +11,10 @@ namespace VideoConverter
     {
         public static string DownloadVideo(string fileUrl)
         {
-            var desktop = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            var path = Path.GetTempPath();
             var url = new Uri(fileUrl);
             var file = Path.GetFileName(url.LocalPath);
-            var downloadPath = Path.Join(desktop, file);
+            var downloadPath = Path.Join(path, file);
 
             try
             {
@@ -29,6 +29,13 @@ namespace VideoConverter
             {
                 throw new WebException("Download failed.", ex);
             }
+        }
+
+        public static string GetOutputFilepath(string inputFilepath, string outputFolder, string outputFormat)
+        {
+            var inputFile = Path.GetFileName(inputFilepath);
+            var outputFilepath = Path.Join(outputFolder, inputFile);
+            return Path.ChangeExtension(outputFilepath, outputFormat);
         }
 
         public static List<T> GetAllPublicConstantsValues<T>(this Type type)

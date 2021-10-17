@@ -1,3 +1,4 @@
+using System;
 using Xunit;
 using System.IO;
 using VideoConverter;
@@ -7,11 +8,13 @@ namespace Tests
     public class ConverterTests
     {
         [Theory]
-        [InlineData("Testvideos/example.mp4", VideoFormats.Webm)]
-        [InlineData("Testvideos/example2.webm", VideoFormats.Mp4)]
+        [InlineData("Testvideos/example.mp4", VideoFormat.Webm)]
+        [InlineData("Testvideos/example2.webm", VideoFormat.Mp4)]
         public void ConversionIsSuccessful(string file, string format)
         {
-            Converter.ConvertVideoFromFile(file, format).Wait();
+            var path = Path.Join(Environment.CurrentDirectory, "Testvideos");
+            var converter = new Converter(path);
+            converter.ConvertVideoFromFile(file, format).Wait();
 
             var outFile = Path.ChangeExtension(file, format);
             var fileExists = File.Exists(outFile);
@@ -27,7 +30,7 @@ namespace Tests
         [InlineData("wmv", false)]
         public void SupportedVideoFormats(string format, bool isSupported)
         {
-            Assert.Equal(isSupported, VideoFormats.IsSupportedVideoFormat(format));
+            Assert.Equal(isSupported, VideoFormat.IsSupportedVideoFormat(format));
         }
     }
 }

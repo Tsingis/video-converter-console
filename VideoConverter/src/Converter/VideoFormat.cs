@@ -1,6 +1,6 @@
 namespace VideoConverter
 {
-    public static class VideoFormats
+    public static class VideoFormat
     {
         public const string Mp4 = "mp4";
         public const string Webm = "webm";
@@ -8,7 +8,7 @@ namespace VideoConverter
 
         public static bool IsSupportedVideoFormat(string format)
         {
-            var allowedFormats = typeof(VideoFormats).GetAllPublicConstantsValues<string>();
+            var allowedFormats = typeof(VideoFormat).GetAllPublicConstantsValues<string>();
             return allowedFormats.Contains(format);
         }
     }
