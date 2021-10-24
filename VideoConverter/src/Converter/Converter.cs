@@ -14,7 +14,7 @@ namespace VideoConverter
             _outputFolder = outputFolder;
         }
 
-        public async Task ConvertVideoFromFile(string inputFilePath, string outputFormat)
+        public async Task ConvertVideo(string inputFilePath, string outputFormat)
         {
             var outputFilePath = Utility.GetOutputFilepath(inputFilePath, _outputFolder, outputFormat);
             if (File.Exists(outputFilePath))
@@ -49,25 +49,6 @@ namespace VideoConverter
             finally
             {
                 File.Delete(inputFilePath);
-            }
-        }
-
-        public async Task ConvertVideoFromUrl(string fileUrl, string outputFormat)
-        {
-            var downloadPath = Utility.DownloadVideo(fileUrl);
-
-            if (File.Exists(downloadPath))
-            {
-                await ConvertVideoFromFile(downloadPath, outputFormat);
-
-                if (File.Exists(downloadPath))
-                {
-                    File.Delete(downloadPath);
-                }
-            }
-            else
-            {
-                throw new FileNotFoundException("File was not found. File: " + downloadPath);
             }
         }
     }

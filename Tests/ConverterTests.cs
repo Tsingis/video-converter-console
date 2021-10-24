@@ -14,7 +14,7 @@ namespace Tests
         {
             var path = Path.Join(Environment.CurrentDirectory, "Testvideos");
             var converter = new Converter(path);
-            converter.ConvertVideoFromFile(file, format).Wait();
+            converter.ConvertVideo(file, format).Wait();
 
             var outFile = Path.ChangeExtension(file, format);
             var fileExists = File.Exists(outFile);

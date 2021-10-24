@@ -83,14 +83,23 @@ namespace VideoConverter
                             var converter = new Converter(outputFolder);
                             if (Uri.IsWellFormedUriString(file, UriKind.RelativeOrAbsolute))
                             {
-                                await converter.ConvertVideoFromUrl(file, outputFormat);
+                                var downloadPath = Utility.DownloadVideo(file);
+                                if (File.Exists(downloadPath))
+                                {
+                                    await converter.ConvertVideo(downloadPath, outputFormat);
+
+                                    if (File.Exists(downloadPath))
+                                    {
+                                        File.Delete(downloadPath);
+                                    }
+                                }
+                                else
+                                {
+                                    await converter.ConvertVideo(file, outputFormat);
+                                }
+                                exitCode = ExitCode.Success;
+                                Console.WriteLine("Successfully conversed file to " + outputFolder);
                             }
-                            else
-                            {
-                                await converter.ConvertVideoFromFile(file, outputFormat);
-                            }
-                            exitCode = ExitCode.Success;
-                            Console.WriteLine("Successfully conversed file to " + outputFolder);
                         }
                         catch (Exception ex)
                         {
