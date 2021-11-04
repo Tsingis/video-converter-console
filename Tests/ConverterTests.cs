@@ -28,7 +28,7 @@ namespace Tests
         [InlineData("webm", true)]
         [InlineData("gif", true)]
         [InlineData("wmv", false)]
-        public void SupportedVideoFormats(string format, bool isSupported)
+        public void IsSupportedVideoFormat(string format, bool isSupported)
         {
             Assert.Equal(isSupported, VideoFormat.IsSupportedVideoFormat(format));
         }
