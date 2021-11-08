@@ -5,7 +5,7 @@
 
 Requirements:
 
-- .NET 5.0 SDK installed
+- .NET 6.0 SDK installed
 - [FFmpeg](https://ffmpeg.org/download.html) installed and added to PATH
 
 Build:
