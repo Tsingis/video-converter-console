@@ -1,44 +1,29 @@
-﻿using System.IO;
-using System;
-using System.Threading.Tasks;
+﻿using System;
+using System.IO;
 using Microsoft.Extensions.Configuration;
 
 namespace VideoConverter
 {
     public class Program
     {
+        private static ExitCode _exitCode;
+        private static string _outputFolder;
+        private static string _outputFormat;
+        private static string _defaultOutputFormat;
         private static IConfiguration _config;
-        public static void Main(string[] args)
+
+        public static void Main()
         {
-            _config = ProgramConfig();
-            MainAsync(args).GetAwaiter().GetResult();
-        }
+            _exitCode = ExitCode.Start;
 
-        private static async Task MainAsync(string[] args)
-        {
-            var exitCode = ExitCode.Start;
-
-            var defaultOutputFormat = _config.GetValue<string>("defaultOutputFormat").ToLower();
-            var outputFolder = _config.GetValue<string>("outputFolder");
-
-            if (!Directory.Exists(outputFolder))
-            {
-                var path = Path.Join(Environment.CurrentDirectory, "Output");
-                Directory.CreateDirectory(path);
-                outputFolder = path;
-            }
-
-            if (String.IsNullOrEmpty(defaultOutputFormat))
-            {
-                defaultOutputFormat = VideoFormat.Mp4;
-            }
+            SetupProgram();
 
             Console.WriteLine("Give URL or file path and output format");
             Console.WriteLine("Example: https://thissite.com/video.webm mp4");
 
-            while (exitCode != ExitCode.End)
+            while (_exitCode != ExitCode.End)
             {
-                var outputFormat = defaultOutputFormat;
+                _outputFormat = _defaultOutputFormat;
 
                 Console.Write("\nInput (q to quit): ");
                 var input = Console.ReadLine();
@@ -49,7 +34,7 @@ namespace VideoConverter
                 {
                     if (parameters[0].ToLower().Equals("q"))
                     {
-                        exitCode = ExitCode.End;
+                        _exitCode = ExitCode.End;
                         break;
                     }
 
@@ -58,11 +43,11 @@ namespace VideoConverter
                         var format = parameters[1].ToLower();
                         if (VideoFormat.IsSupportedVideoFormat(format))
                         {
-                            outputFormat = format;
+                            _outputFormat = format;
                         }
                         else
                         {
-                            exitCode = ExitCode.Error;
+                            _exitCode = ExitCode.Error;
                             Console.WriteLine("\nOutput format is not supported.");
                             continue;
                         }
@@ -70,53 +55,76 @@ namespace VideoConverter
 
                     var file = parameters[0];
                     var inputFormat = Path.GetExtension(file).Replace(".", "");
-                    if (inputFormat.Equals(outputFormat))
+                    if (inputFormat.Equals(_outputFormat))
                     {
-                        exitCode = ExitCode.Error;
+                        _exitCode = ExitCode.Error;
                         Console.WriteLine("\nOutput and input formats are the same.");
                         continue;
                     }
-                    else
-                    {
-                        try
-                        {
-                            var converter = new Converter(outputFolder);
-                            if (Uri.IsWellFormedUriString(file, UriKind.RelativeOrAbsolute))
-                            {
-                                var downloadPath = Utility.DownloadVideo(file);
-                                if (File.Exists(downloadPath))
-                                {
-                                    await converter.ConvertVideo(downloadPath, outputFormat);
 
-                                    if (File.Exists(downloadPath))
-                                    {
-                                        File.Delete(downloadPath);
-                                    }
-                                }
-                                else
-                                {
-                                    await converter.ConvertVideo(file, outputFormat);
-                                }
-                                exitCode = ExitCode.Success;
-                                Console.WriteLine("Successfully conversed file to " + outputFolder);
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            exitCode = ExitCode.Error;
-                            Console.WriteLine("Error in conversion. " + ex.Message);
-                        }
-                    }
+                    ConvertVideo(file);
                 }
                 else
                 {
-                    exitCode = ExitCode.Error;
+                    _exitCode = ExitCode.Error;
                     Console.WriteLine("\nIncorrect input. Try again.");
                 }
             }
         }
 
-        private static IConfiguration ProgramConfig()
+        private static void ConvertVideo(string inputFile)
+        {
+            try
+            {
+                var converter = new Converter(_outputFolder);
+                if (Uri.IsWellFormedUriString(inputFile, UriKind.RelativeOrAbsolute))
+                {
+                    var downloadPath = Utility.DownloadFileAsync(inputFile).Result;
+
+                    if (File.Exists(downloadPath))
+                    {
+                        converter.ConvertVideoAsync(downloadPath, _outputFormat).Wait();
+                        if (File.Exists(downloadPath))
+                        {
+                            File.Delete(downloadPath);
+                        }
+                    }
+                    else
+                    {
+                        converter.ConvertVideoAsync(inputFile, _outputFormat).Wait();
+                    }
+
+                    _exitCode = ExitCode.Success;
+                    Console.WriteLine("Successfully conversed file to " + _outputFolder);
+                }
+            }
+            catch (Exception ex)
+            {
+                _exitCode = ExitCode.Error;
+                Console.WriteLine("Error in conversion. " + ex.Message);
+            }
+        }
+
+        private static void SetupProgram()
+        {
+            _config = SetupConfig();
+            _defaultOutputFormat = _config.GetValue<string>("defaultOutputFormat").ToLower();
+            _outputFolder = _config.GetValue<string>("outputFolder");
+
+            if (!Directory.Exists(_outputFolder))
+            {
+                var path = Path.Join(Environment.CurrentDirectory, "Output");
+                Directory.CreateDirectory(path);
+                _outputFolder = path;
+            }
+
+            if (String.IsNullOrEmpty(_defaultOutputFormat))
+            {
+                _defaultOutputFormat = VideoFormat.Mp4;
+            }
+        }
+
+        private static IConfiguration SetupConfig()
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())

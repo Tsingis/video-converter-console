@@ -1,7 +1,7 @@
 using System;
 using System.IO;
-using Xabe.FFmpeg;
 using System.Threading.Tasks;
+using Xabe.FFmpeg;
 
 namespace VideoConverter
 {
@@ -14,12 +14,12 @@ namespace VideoConverter
             _outputFolder = outputFolder;
         }
 
-        public async Task ConvertVideo(string inputFilePath, string outputFormat)
+        public async Task ConvertVideoAsync(string inputFilePath, string outputFormat)
         {
             var outputFilePath = Utility.GetOutputFilepath(inputFilePath, _outputFolder, outputFormat);
             if (File.Exists(outputFilePath))
             {
-                throw new ConversionException("Output file already exists.");
+                File.Delete(outputFilePath);
             }
 
             try
