@@ -1,33 +1,44 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Collections.Generic;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace VideoConverter
 {
     public static class Utility
     {
-        public static string DownloadVideo(string fileUrl)
+        public static async Task<string> DownloadFileAsync(string fileUrl)
         {
-            var path = Path.GetTempPath();
-            var url = new Uri(fileUrl);
-            var file = Path.GetFileName(url.LocalPath);
-            var downloadPath = Path.Join(path, file);
-
             try
             {
-                using (var client = new WebClient())
-                {
-                    client.DownloadFile(url, downloadPath);
-                }
+                var url = new Uri(fileUrl);
+                var path = Path.GetTempPath();
+                var file = Path.GetFileName(url.LocalPath);
+                var downloadPath = Path.Join(path, file);
 
-                return downloadPath;
+                using (var client = new HttpClient())
+                {
+                    var res = await client.GetAsync(url);
+                    {
+                        if (res.IsSuccessStatusCode)
+                        {
+                            using (var fs = new FileStream(downloadPath, FileMode.Create))
+                            {
+                                await res.Content.CopyToAsync(fs);
+                                return downloadPath;
+                            }
+                        }
+
+                        throw new HttpRequestException($"Status code: " + res.StatusCode);
+                    }
+                }
             }
             catch (Exception ex)
             {
-                throw new WebException("Download failed.", ex);
+                throw new Exception("Download failed. " + ex.Message);
             }
         }
 
