@@ -53,8 +53,8 @@ namespace VideoConverter
                         }
                     }
 
-                    var file = parameters[0];
-                    var inputFormat = Path.GetExtension(file).Replace(".", "");
+                    var inputFile = parameters[0];
+                    var inputFormat = Path.GetExtension(inputFile).Replace(".", "");
                     if (inputFormat.Equals(_outputFormat))
                     {
                         _exitCode = ExitCode.Error;
@@ -62,7 +62,7 @@ namespace VideoConverter
                         continue;
                     }
 
-                    ConvertVideo(file);
+                    ConvertVideo(inputFile);
                 }
                 else
                 {
@@ -84,19 +84,15 @@ namespace VideoConverter
                     if (File.Exists(downloadPath))
                     {
                         converter.ConvertVideoAsync(downloadPath, _outputFormat).Wait();
-                        if (File.Exists(downloadPath))
-                        {
-                            File.Delete(downloadPath);
-                        }
                     }
-                    else
-                    {
-                        converter.ConvertVideoAsync(inputFile, _outputFormat).Wait();
-                    }
-
-                    _exitCode = ExitCode.Success;
-                    Console.WriteLine("Successfully conversed file to " + _outputFolder);
                 }
+                else
+                {
+                    converter.ConvertVideoAsync(inputFile, _outputFormat).Wait();
+                }
+
+                _exitCode = ExitCode.Success;
+                Console.WriteLine("Successfully conversed file to " + _outputFolder);
             }
             catch (Exception ex)
             {
