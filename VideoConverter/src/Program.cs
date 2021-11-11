@@ -35,7 +35,7 @@ namespace VideoConverter
                     if (parameters[0].ToLower().Equals("q"))
                     {
                         _exitCode = ExitCode.End;
-                        break;
+                        Environment.Exit((int)_exitCode);
                     }
 
                     if (parameters.Length == 2)
@@ -103,20 +103,31 @@ namespace VideoConverter
 
         private static void SetupProgram()
         {
-            _config = SetupConfig();
-            _defaultOutputFormat = _config.GetValue<string>("defaultOutputFormat").ToLower();
-            _outputFolder = _config.GetValue<string>("outputFolder");
-
-            if (!Directory.Exists(_outputFolder))
+            try
             {
-                var path = Path.Join(Environment.CurrentDirectory, "Output");
-                Directory.CreateDirectory(path);
-                _outputFolder = path;
+                _config = SetupConfig();
+                _defaultOutputFormat = _config.GetValue<string>("defaultOutputFormat").ToLower();
+                _outputFolder = _config.GetValue<string>("outputFolder");
+
+                if (!Directory.Exists(_outputFolder))
+                {
+                    var path = Path.Join(Environment.CurrentDirectory, "Output");
+                    Directory.CreateDirectory(path);
+                    _outputFolder = path;
+                }
+
+                if (String.IsNullOrEmpty(_defaultOutputFormat))
+                {
+                    _defaultOutputFormat = VideoFormat.Mp4;
+                }
             }
-
-            if (String.IsNullOrEmpty(_defaultOutputFormat))
+            catch (Exception ex)
             {
-                _defaultOutputFormat = VideoFormat.Mp4;
+                _exitCode = ExitCode.End;
+                Console.WriteLine("Error in config. " + ex.Message);
+                Console.WriteLine("Press any key to quit");
+                Console.ReadKey();
+                Environment.Exit((int)_exitCode);
             }
         }
 
@@ -131,8 +142,8 @@ namespace VideoConverter
 
         private enum ExitCode
         {
-            Start = 0,
-            End,
+            End = 0,
+            Start = 1,
             Success,
             Error
         }
