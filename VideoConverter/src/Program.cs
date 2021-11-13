@@ -12,7 +12,6 @@ namespace VideoConverter
         private static string _outputFormat;
         private static string _defaultOutputDir;
         private static string _defaultOutputFormat;
-        private static IConfiguration _config;
 
         public static void Main()
         {
@@ -105,9 +104,9 @@ namespace VideoConverter
         {
             try
             {
-                _config = SetupConfig();
-                _defaultOutputFormat = _config.GetValue<string>("defaultOutputFormat").ToLower();
-                _defaultOutputDir = _config.GetValue<string>("defaultOutputDir");
+                var config = SetupConfig();
+                _defaultOutputFormat = config.GetValue<string>("defaultOutputFormat").ToLower();
+                _defaultOutputDir = config.GetValue<string>("defaultOutputDir");
 
                 if (!Directory.Exists(_defaultOutputDir))
                 {
