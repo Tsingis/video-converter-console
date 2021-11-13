@@ -42,10 +42,10 @@ namespace VideoConverter
             }
         }
 
-        public static string GetOutputFilepath(string inputFilepath, string outputFolder, string outputFormat)
+        public static string GetOutputFilepath(string inputFilePath, string outputDir, string outputFormat)
         {
-            var inputFile = Path.GetFileName(inputFilepath);
-            var outputFilepath = Path.Join(outputFolder, inputFile);
+            var inputFile = Path.GetFileName(inputFilePath);
+            var outputFilepath = Path.Join(outputDir, inputFile);
             return Path.ChangeExtension(outputFilepath, outputFormat);
         }
 

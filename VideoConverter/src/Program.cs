@@ -7,8 +7,10 @@ namespace VideoConverter
     public class Program
     {
         private static ExitCode _exitCode;
-        private static string _outputFolder;
+        private static string _inputFile;
+        private static string _outputDir;
         private static string _outputFormat;
+        private static string _defaultOutputDir;
         private static string _defaultOutputFormat;
         private static IConfiguration _config;
 
@@ -23,6 +25,7 @@ namespace VideoConverter
 
             while (_exitCode != ExitCode.End)
             {
+                _outputDir = _defaultOutputDir;
                 _outputFormat = _defaultOutputFormat;
 
                 Console.Write("\nInput (q to quit): ");
@@ -40,21 +43,17 @@ namespace VideoConverter
 
                     if (parameters.Length == 2)
                     {
-                        var format = parameters[1].ToLower();
-                        if (VideoFormat.IsSupportedVideoFormat(format))
-                        {
-                            _outputFormat = format;
-                        }
-                        else
+                        _outputFormat = parameters[1].ToLower();
+                        if (!VideoFormat.IsSupportedVideoFormat(_outputFormat))
                         {
                             _exitCode = ExitCode.Error;
-                            Console.WriteLine("\nOutput format is not supported.");
+                            Console.WriteLine($"\nOutput format {_outputFormat} is not supported.");
                             continue;
                         }
                     }
 
-                    var inputFile = parameters[0];
-                    var inputFormat = Path.GetExtension(inputFile).Replace(".", "");
+                    _inputFile = parameters[0];
+                    var inputFormat = Path.GetExtension(_inputFile).Replace(".", "");
                     if (inputFormat.Equals(_outputFormat))
                     {
                         _exitCode = ExitCode.Error;
@@ -62,7 +61,7 @@ namespace VideoConverter
                         continue;
                     }
 
-                    ConvertVideo(inputFile);
+                    Convert();
                 }
                 else
                 {
@@ -72,32 +71,33 @@ namespace VideoConverter
             }
         }
 
-        private static void ConvertVideo(string inputFile)
+        private static void Convert()
         {
             try
             {
-                var converter = new Converter(_outputFolder);
-                if (Uri.IsWellFormedUriString(inputFile, UriKind.RelativeOrAbsolute))
+                string output = String.Empty;
+                var converter = new Converter(_outputDir);
+                if (Uri.IsWellFormedUriString(_inputFile, UriKind.RelativeOrAbsolute))
                 {
-                    var downloadPath = Utility.DownloadFileAsync(inputFile).Result;
+                    var downloadPath = Utility.DownloadFileAsync(_inputFile).Result;
 
                     if (File.Exists(downloadPath))
                     {
-                        converter.ConvertVideoAsync(downloadPath, _outputFormat).Wait();
+                        output = converter.ConvertVideoAsync(downloadPath, _outputFormat).Result;
                     }
                 }
                 else
                 {
-                    converter.ConvertVideoAsync(inputFile, _outputFormat).Wait();
+                    output = converter.ConvertVideoAsync(_inputFile, _outputFormat).Result;
                 }
 
                 _exitCode = ExitCode.Success;
-                Console.WriteLine("Successfully conversed file to " + _outputFolder);
+                Console.WriteLine($"Successfully conversed file {output}");
             }
             catch (Exception ex)
             {
                 _exitCode = ExitCode.Error;
-                Console.WriteLine("Error in conversion. " + ex.Message);
+                Console.WriteLine($"Error in conversion. {ex.Message}");
             }
         }
 
@@ -107,16 +107,17 @@ namespace VideoConverter
             {
                 _config = SetupConfig();
                 _defaultOutputFormat = _config.GetValue<string>("defaultOutputFormat").ToLower();
-                _outputFolder = _config.GetValue<string>("outputFolder");
+                _defaultOutputDir = _config.GetValue<string>("defaultOutputDir");
 
-                if (!Directory.Exists(_outputFolder))
+                if (!Directory.Exists(_defaultOutputDir))
                 {
                     var path = Path.Join(Environment.CurrentDirectory, "Output");
                     Directory.CreateDirectory(path);
-                    _outputFolder = path;
+                    _defaultOutputDir = path;
                 }
 
-                if (String.IsNullOrEmpty(_defaultOutputFormat))
+                if (String.IsNullOrEmpty(_defaultOutputFormat) ||
+                    !VideoFormat.IsSupportedVideoFormat(_defaultOutputFormat))
                 {
                     _defaultOutputFormat = VideoFormat.Mp4;
                 }

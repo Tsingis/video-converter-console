@@ -15,16 +15,15 @@ namespace Tests
         public void ConversionIsSuccessful(string inputFile, string outputFormat)
         {
             var inputFilePath = Path.Join(TestVideoPath, inputFile);
-            var outputFilePath = Path.Join(Environment.CurrentDirectory, TestVideoPath);
+            var outputFileDir = Path.Join(Environment.CurrentDirectory, TestVideoPath);
 
-            var converter = new Converter(outputFilePath);
-            converter.ConvertVideoAsync(inputFilePath, outputFormat).Wait();
+            var converter = new Converter(outputFileDir);
+            var outputFilePath = converter.ConvertVideoAsync(inputFilePath, outputFormat).Result;
 
-            var outFile = Path.ChangeExtension(inputFilePath, outputFormat);
-            var fileExists = File.Exists(outFile);
+            var fileExists = File.Exists(outputFilePath);
 
             Assert.True(fileExists);
-            File.Delete(outFile);
+            File.Delete(outputFilePath);
         }
 
         [Fact]

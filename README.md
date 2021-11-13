@@ -17,11 +17,11 @@ dotnet publish -o <target path>
 
 Configuration:
 
-- Change default values for output folder and default output format in the `config.json` file
+- Change default values for output directory and default output format in the `config.json` file
 
 ```json
 {
-  "outputFolder": "%USERPROFILE%\\Downloads",
+  "defaultOutputDir": "%USERPROFILE%\\Downloads",
   "defaultOutputFormat": "mp4"
 }
 ```

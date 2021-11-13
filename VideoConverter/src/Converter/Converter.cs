@@ -7,16 +7,16 @@ namespace VideoConverter
 {
     public class Converter
     {
-        public string _outputFolder;
+        public string _outputFileDir;
 
-        public Converter(string outputFolder)
+        public Converter(string ouputFileDir)
         {
-            _outputFolder = outputFolder;
+            _outputFileDir = ouputFileDir;
         }
 
-        public async Task ConvertVideoAsync(string inputFilePath, string outputFormat)
+        public async Task<string> ConvertVideoAsync(string inputFilePath, string outputFormat)
         {
-            var outputFilePath = Utility.GetOutputFilepath(inputFilePath, _outputFolder, outputFormat);
+            var outputFilePath = Utility.GetOutputFilepath(inputFilePath, _outputFileDir, outputFormat);
             if (File.Exists(outputFilePath))
             {
                 File.Delete(outputFilePath);
@@ -41,6 +41,7 @@ namespace VideoConverter
                 }
 
                 await conversion.Start();
+                return outputFilePath;
             }
             catch (Exception ex)
             {
