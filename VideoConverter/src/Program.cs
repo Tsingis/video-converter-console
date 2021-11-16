@@ -1,14 +1,12 @@
 ﻿using System;
 using System.IO;
 using CommandLine;
-using CommandLine.Text;
 using Microsoft.Extensions.Configuration;
 
 namespace VideoConverter
 {
     public class Program
     {
-        private static ExitCode _exitCode;
         private static string _inputFile;
         private static string _outputDir;
         private static string _outputFormat;
@@ -20,7 +18,7 @@ namespace VideoConverter
             SetupProgram();
 
             Console.WriteLine("Give URL or file path and optional output format and/or output path.");
-            Console.WriteLine("Default parameters can be set with config.json file.\n");
+            Console.WriteLine("Default options can be set with config.json file.\n");
             Console.WriteLine("Usage: -i <input url or path> -f <output format> -o <output path>");
             Console.WriteLine("Example: -i https://video.com/video1.mp4 -f webm");
 
@@ -30,23 +28,28 @@ namespace VideoConverter
                 _outputFormat = _defaultOutputFormat;
 
                 Console.Write("\nType input (q to quit): ");
-
                 var input = Console.ReadLine();
+
                 if (input.ToLower().Equals("q"))
                 {
                     Environment.Exit((int)ExitCode.OK);
                 }
 
-                var parameters = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-                var parsed = Parser.Default.ParseArguments<Options>(parameters);
-
-                parsed.WithParsed<Options>(opt =>
-                {
-                    _exitCode = HandleOptions(opt);
-                    if (_exitCode != ExitCode.Error)
+                var options = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                var parser = new Parser(with => with.HelpWriter = null);
+                var parserResult = parser.ParseArguments<Options>(options);
+                parserResult.WithParsed<Options>(opt =>
                     {
-                        _exitCode = Convert();
-                    }
+                        var exitCode = HandleOptions(opt);
+                        if (exitCode != ExitCode.Error)
+                        {
+                            HandleConvert();
+                        }
+                    });
+                parserResult.WithNotParsed(err =>
+                {
+                    var help = Options.HandleError(parserResult);
+                    Console.WriteLine(help);
                 });
             }
         }
@@ -84,7 +87,7 @@ namespace VideoConverter
             return ExitCode.OK;
         }
 
-        private static ExitCode Convert()
+        private static void HandleConvert()
         {
             try
             {
@@ -105,12 +108,10 @@ namespace VideoConverter
                 }
 
                 Console.WriteLine($"Successfully conversed file {output}");
-                return ExitCode.OK;
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error in conversion. {ex.Message}");
-                return ExitCode.Error;
             }
         }
 

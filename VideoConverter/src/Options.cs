@@ -1,4 +1,6 @@
+using System;
 using CommandLine;
+using CommandLine.Text;
 
 public class Options
 {
@@ -10,4 +12,17 @@ public class Options
 
     [Option('o', "output", Required = false, HelpText = "Output path for the converted file.")]
     public string OutputPath { get; set; }
+
+    public static HelpText HandleError<T>(ParserResult<T> result)
+    {
+        var helpText = HelpText.AutoBuild(result, h =>
+        {
+            h.Heading = String.Empty;
+            h.Copyright = String.Empty;
+            h.AutoHelp = false;
+            h.AutoVersion = false;
+            return HelpText.DefaultParsingErrorsHandler(result, h);
+        }, err => err);
+        return helpText;
+    }
 }
