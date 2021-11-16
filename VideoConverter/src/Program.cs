@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using CommandLine;
+using CommandLine.Text;
 using Microsoft.Extensions.Configuration;
 
 namespace VideoConverter
@@ -15,62 +17,74 @@ namespace VideoConverter
 
         public static void Main()
         {
-            _exitCode = ExitCode.Start;
-
             SetupProgram();
 
-            Console.WriteLine("Give URL or file path and output format");
-            Console.WriteLine("Example: https://thissite.com/video.webm mp4");
+            Console.WriteLine("Give URL or file path and optional output format and/or output path.");
+            Console.WriteLine("Default parameters can be set with config.json file.\n");
+            Console.WriteLine("Usage: -i <input url or path> -f <output format> -o <output path>");
+            Console.WriteLine("Example: -i https://video.com/video1.mp4 -f webm");
 
-            while (_exitCode != ExitCode.End)
+            while (true)
             {
                 _outputDir = _defaultOutputDir;
                 _outputFormat = _defaultOutputFormat;
 
-                Console.Write("\nInput (q to quit): ");
+                Console.Write("\nType input (q to quit): ");
+
                 var input = Console.ReadLine();
+                if (input.ToLower().Equals("q"))
+                {
+                    Environment.Exit((int)ExitCode.OK);
+                }
 
                 var parameters = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+                var parsed = Parser.Default.ParseArguments<Options>(parameters);
 
-                if (!String.IsNullOrEmpty(input) && parameters.Length <= 2)
+                parsed.WithParsed<Options>(opt =>
                 {
-                    if (parameters[0].ToLower().Equals("q"))
+                    _exitCode = HandleOptions(opt);
+                    if (_exitCode != ExitCode.Error)
                     {
-                        _exitCode = ExitCode.End;
-                        Environment.Exit((int)_exitCode);
+                        _exitCode = Convert();
                     }
-
-                    if (parameters.Length == 2)
-                    {
-                        _outputFormat = parameters[1].ToLower();
-                        if (!VideoFormat.IsSupportedVideoFormat(_outputFormat))
-                        {
-                            _exitCode = ExitCode.Error;
-                            Console.WriteLine($"\nOutput format {_outputFormat} is not supported.");
-                            continue;
-                        }
-                    }
-
-                    _inputFile = parameters[0];
-                    var inputFormat = Path.GetExtension(_inputFile).Replace(".", "");
-                    if (inputFormat.Equals(_outputFormat))
-                    {
-                        _exitCode = ExitCode.Error;
-                        Console.WriteLine("\nOutput and input formats are the same.");
-                        continue;
-                    }
-
-                    Convert();
-                }
-                else
-                {
-                    _exitCode = ExitCode.Error;
-                    Console.WriteLine("\nIncorrect input. Try again.");
-                }
+                });
             }
         }
 
-        private static void Convert()
+        private static ExitCode HandleOptions(Options options)
+        {
+            if (options.OutputFormat != null)
+            {
+                var isSupported = VideoFormat.IsSupportedVideoFormat(options.OutputFormat);
+                if (!isSupported)
+                {
+                    Console.WriteLine($"Output format {options.OutputFormat} is not supported.");
+                    return ExitCode.Error;
+                }
+                _outputFormat = options.OutputFormat;
+            }
+
+            if (options.OutputPath != null)
+            {
+                _outputDir = options.OutputPath;
+            }
+
+            if (!String.IsNullOrEmpty(options.InputFile))
+            {
+                var inputFormat = Path.GetExtension(options.InputFile).Replace(".", "");
+                if (inputFormat.Equals(_outputFormat))
+                {
+                    Console.WriteLine("Output and input formats are the same.");
+                    return ExitCode.Error;
+                }
+
+                _inputFile = options.InputFile;
+            }
+
+            return ExitCode.OK;
+        }
+
+        private static ExitCode Convert()
         {
             try
             {
@@ -90,13 +104,13 @@ namespace VideoConverter
                     output = converter.ConvertVideoAsync(_inputFile, _outputFormat).Result;
                 }
 
-                _exitCode = ExitCode.Success;
                 Console.WriteLine($"Successfully conversed file {output}");
+                return ExitCode.OK;
             }
             catch (Exception ex)
             {
-                _exitCode = ExitCode.Error;
                 Console.WriteLine($"Error in conversion. {ex.Message}");
+                return ExitCode.Error;
             }
         }
 
@@ -123,11 +137,10 @@ namespace VideoConverter
             }
             catch (Exception ex)
             {
-                _exitCode = ExitCode.End;
                 Console.WriteLine("Error in config. " + ex.Message);
                 Console.WriteLine("Press any key to quit");
                 Console.ReadKey();
-                Environment.Exit((int)_exitCode);
+                Environment.Exit((int)ExitCode.Error);
             }
         }
 
@@ -142,10 +155,8 @@ namespace VideoConverter
 
         private enum ExitCode
         {
-            End = 0,
-            Start = 1,
-            Success,
-            Error
+            OK = 0,
+            Error,
         }
     }
 }
