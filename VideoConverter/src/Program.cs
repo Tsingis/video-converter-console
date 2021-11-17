@@ -35,6 +35,11 @@ namespace VideoConverter
                     Environment.Exit((int)ExitCode.OK);
                 }
 
+                if (!input.StartsWith("-i") && !String.IsNullOrEmpty(input))
+                {
+                    input = input.Insert(0, "-i");
+                }
+
                 var options = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
                 var parser = new Parser(with => with.HelpWriter = null);
                 var parserResult = parser.ParseArguments<Options>(options);
