@@ -7,6 +7,7 @@ Requirements:
 
 - .NET 6.0 SDK installed
 - [FFmpeg](https://ffmpeg.org/download.html) installed and added to PATH
+- Optionally use FFmpegDownloader to download required executables
 
 Build:
 
