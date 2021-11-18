@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Xabe.FFmpeg;
+using Xabe.FFmpeg.Exceptions;
 
 namespace VideoConverter
 {
@@ -42,6 +43,10 @@ namespace VideoConverter
 
                 await conversion.Start();
                 return outputFilePath;
+            }
+            catch (FFmpegNotFoundException ex)
+            {
+                throw new ConversionException("FFmpeg executables not found in PATH.", ex);
             }
             catch (Exception ex)
             {
