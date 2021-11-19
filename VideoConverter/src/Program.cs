@@ -97,19 +97,18 @@ namespace VideoConverter
             try
             {
                 string output = String.Empty;
-                var converter = new Converter(_outputDir);
                 if (Uri.IsWellFormedUriString(_inputFile, UriKind.RelativeOrAbsolute))
                 {
                     var downloadPath = Utility.DownloadFileAsync(_inputFile).Result;
 
                     if (File.Exists(downloadPath))
                     {
-                        output = converter.ConvertVideoAsync(downloadPath, _outputFormat).Result;
+                        output = Converter.ConvertVideoAsync(downloadPath, _outputDir, _outputFormat).Result;
                     }
                 }
                 else
                 {
-                    output = converter.ConvertVideoAsync(_inputFile, _outputFormat).Result;
+                    output = Converter.ConvertVideoAsync(_inputFile, _outputDir, _outputFormat).Result;
                 }
 
                 Console.WriteLine($"Successfully conversed file {output}");
@@ -143,7 +142,7 @@ namespace VideoConverter
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error in config. " + ex.Message);
+                Console.WriteLine($"Error in config. {ex.Message}");
                 Console.WriteLine("Press any key to quit");
                 Console.ReadKey();
                 Environment.Exit((int)ExitCode.Error);

@@ -6,18 +6,13 @@ using Xabe.FFmpeg.Exceptions;
 
 namespace VideoConverter
 {
-    public class Converter
+    public static class Converter
     {
-        public string _outputFileDir;
+        private static readonly string _alternativeFFmpegPath = Environment.CurrentDirectory;
 
-        public Converter(string ouputFileDir)
+        public static async Task<string> ConvertVideoAsync(string inputFilePath, string outputFileDir, string outputFormat)
         {
-            _outputFileDir = ouputFileDir;
-        }
-
-        public async Task<string> ConvertVideoAsync(string inputFilePath, string outputFormat)
-        {
-            var outputFilePath = Utility.GetOutputFilepath(inputFilePath, _outputFileDir, outputFormat);
+            var outputFilePath = Utility.GetOutputFilepath(inputFilePath, outputFileDir, outputFormat);
             if (File.Exists(outputFilePath))
             {
                 File.Delete(outputFilePath);
@@ -44,9 +39,14 @@ namespace VideoConverter
                 await conversion.Start();
                 return outputFilePath;
             }
-            catch (FFmpegNotFoundException ex)
+            catch (FFmpegNotFoundException)
             {
-                throw new ConversionException("FFmpeg executables not found in PATH.", ex);
+                if (Utility.FFmpegExecutablesExist(_alternativeFFmpegPath))
+                {
+                    FFmpeg.SetExecutablesPath(_alternativeFFmpegPath);
+                }
+
+                throw new FFmpegPathException($"FFmpeg executables not found in environment PATH or in {_alternativeFFmpegPath}.");
             }
             catch (Exception ex)
             {

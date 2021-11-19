@@ -17,8 +17,7 @@ namespace Tests
             var inputFilePath = Path.Join(TestVideoPath, inputFile);
             var outputFileDir = Path.Join(Environment.CurrentDirectory, TestVideoPath);
 
-            var converter = new Converter(outputFileDir);
-            var outputFilePath = converter.ConvertVideoAsync(inputFilePath, outputFormat).Result;
+            var outputFilePath = Converter.ConvertVideoAsync(inputFilePath, outputFileDir, outputFormat).Result;
 
             var fileExists = File.Exists(outputFilePath);
 
