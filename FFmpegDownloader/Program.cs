@@ -10,7 +10,7 @@ namespace FFmpeg.Downloader
     {
         public static void Main()
         {
-            var path = Path.Join(Environment.CurrentDirectory, "FFmpeg");
+            var path = Environment.CurrentDirectory;
             Console.WriteLine($"Downloading FFmpeg executables to {path}");
             DownloadFFmpegExecutables(path);
             Console.WriteLine("Download finished.");
