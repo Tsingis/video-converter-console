@@ -1,9 +1,7 @@
 using System;
 using System.IO;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace VideoConverter
@@ -49,13 +47,11 @@ namespace VideoConverter
             return Path.ChangeExtension(outputFilepath, outputFormat);
         }
 
-        public static List<T> GetAllPublicConstantsValues<T>(this Type type)
+        public static bool FFmpegExecutablesExist(string targetDirectory)
         {
-            return type
-                .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
-                .Where(x => x.IsLiteral && !x.IsInitOnly && x.FieldType == typeof(T))
-                .Select(x => (T)x.GetRawConstantValue())
-                .ToList();
+            var execs = new string[] { "ffmpeg.exe", "ffprobe.exe", "ffplay.exe" };
+            var files = Directory.GetFiles(targetDirectory).Select(Path.GetFileName);
+            return execs.All(x => files.Contains(x));
         }
     }
 }

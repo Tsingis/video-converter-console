@@ -1,3 +1,8 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Reflection;
+
 namespace VideoConverter
 {
     public static class VideoFormat
@@ -10,6 +15,15 @@ namespace VideoConverter
         {
             var allowedFormats = typeof(VideoFormat).GetAllPublicConstantsValues<string>();
             return allowedFormats.Contains(format);
+        }
+
+        private static List<T> GetAllPublicConstantsValues<T>(this Type type)
+        {
+            return type
+                .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                .Where(x => x.IsLiteral && !x.IsInitOnly && x.FieldType == typeof(T))
+                .Select(x => (T)x.GetRawConstantValue())
+                .ToList();
         }
     }
 }
