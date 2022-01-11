@@ -12,6 +12,11 @@ namespace VideoConverter
 
         public static async Task<string> ConvertVideoAsync(string inputFilePath, string outputFileDir, string outputFormat)
         {
+            if (Utility.FFmpegExecutablesExist(_alternativeFFmpegPath))
+            {
+                FFmpeg.SetExecutablesPath(_alternativeFFmpegPath);
+            }
+
             var outputFilePath = Utility.GetOutputFilepath(inputFilePath, outputFileDir, outputFormat);
             if (File.Exists(outputFilePath))
             {
@@ -41,11 +46,6 @@ namespace VideoConverter
             }
             catch (FFmpegNotFoundException)
             {
-                if (Utility.FFmpegExecutablesExist(_alternativeFFmpegPath))
-                {
-                    FFmpeg.SetExecutablesPath(_alternativeFFmpegPath);
-                }
-
                 throw new FFmpegPathException($"FFmpeg executables not found in environment PATH or in {_alternativeFFmpegPath}.");
             }
             catch (Exception ex)
