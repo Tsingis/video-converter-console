@@ -1,24 +1,20 @@
 # Video converter
 
+What is it?
+
+- Conversions between common video formats
 - Supported output formats are mp4, webm and gif
 - Input as file url or path
 
 Requirements:
 
-- .NET 6.0 SDK installed
-- [FFmpeg](https://ffmpeg.org/download.html) installed and added to PATH
-- Optionally use FFmpegDownloader to download required executables
-
-Build:
-
-```bash
-cd VideoConverter
-dotnet publish -o <target path>
-```
+- [FFmpeg](https://ffmpeg.org/download.html) executables downloaded
+- (Optional) use _FFmpegDownloader_ to download required executables
+- FFmpeg executables directory set to Path environment variable
 
 Configuration:
 
-- Change default values for output directory and default output format in the `config.json` file
+- Change default values for output directory and default output format in the `config.json` file. Example below:
 
 ```json
 {
@@ -27,7 +23,20 @@ Configuration:
 }
 ```
 
-Test:
+## Development
+
+Additional requirements:
+
+- [.NET 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) installed
+
+Create application executable:
+
+```bash
+cd VideoConverter
+dotnet publish -o <target path>
+```
+
+Run tests:
 
 ```bash
 cd Tests
