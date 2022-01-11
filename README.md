@@ -11,6 +11,7 @@ Requirements:
 - [FFmpeg](https://ffmpeg.org/download.html) executables downloaded
 - (Optional) use _FFmpegDownloader_ to download required executables
 - FFmpeg executables directory set to Path environment variable
+- (Optional) FFmpeg executables inside the root of the application directory
 
 Configuration:
 
