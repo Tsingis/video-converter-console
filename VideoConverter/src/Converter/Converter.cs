@@ -52,10 +52,6 @@ namespace VideoConverter
             {
                 throw new ConversionException("Conversion failed.", ex);
             }
-            finally
-            {
-                File.Delete(inputFilePath);
-            }
         }
     }
 }

@@ -104,6 +104,7 @@ namespace VideoConverter
                     if (File.Exists(downloadPath))
                     {
                         output = Converter.ConvertVideoAsync(downloadPath, _outputDir, _outputFormat).Result;
+                        File.Delete(downloadPath);
                     }
                 }
                 else
