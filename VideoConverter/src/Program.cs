@@ -63,22 +63,34 @@ namespace VideoConverter
         {
             if (options.OutputFormat != null)
             {
-                var isSupported = VideoFormat.IsSupportedVideoFormat(options.OutputFormat);
-                if (!isSupported)
+                if (!VideoFormat.IsSupportedVideoFormat(options.OutputFormat))
                 {
-                    Console.WriteLine($"Output format {options.OutputFormat} is not supported.");
+                    Console.WriteLine($"Output format is not supported.");
                     return ExitCode.Error;
                 }
-                _outputFormat = options.OutputFormat;
-            }
 
-            if (options.OutputPath != null)
-            {
-                _outputDir = options.OutputPath;
+                _outputFormat = options.OutputFormat;
             }
 
             if (!String.IsNullOrEmpty(options.InputFile))
             {
+                bool validUrl = false;
+                if (options.InputFile.StartsWith("http"))
+                {
+                    validUrl = Utility.IsValidUrl(options.InputFile);
+                    if (!validUrl)
+                    {
+                        Console.WriteLine("Input uri not well formed.");
+                        return ExitCode.Error;
+                    }
+                }
+
+                if (!validUrl && !File.Exists(options.InputFile))
+                {
+                    Console.WriteLine("Input file does not exist.");
+                    return ExitCode.Error;
+                }
+
                 var inputFormat = Path.GetExtension(options.InputFile).Replace(".", "");
                 if (inputFormat.Equals(_outputFormat))
                 {
@@ -87,6 +99,11 @@ namespace VideoConverter
                 }
 
                 _inputFile = options.InputFile;
+            }
+
+            if (options.OutputPath != null)
+            {
+                _outputDir = options.OutputPath;
             }
 
             return ExitCode.OK;

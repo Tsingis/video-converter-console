@@ -40,6 +40,13 @@ namespace VideoConverter
             }
         }
 
+        public static bool IsValidUrl(string inputFilePath)
+        {
+            Uri validUri;
+            return Uri.TryCreate(inputFilePath, UriKind.Absolute, out validUri) &&
+                (validUri.Scheme == Uri.UriSchemeHttp || validUri.Scheme == Uri.UriSchemeHttps);
+        }
+
         public static string GetOutputFilepath(string inputFilePath, string outputDir, string outputFormat)
         {
             var inputFile = Path.GetFileName(inputFilePath);
