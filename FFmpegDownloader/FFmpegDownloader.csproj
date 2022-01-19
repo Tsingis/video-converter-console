@@ -10,6 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.0.2" />
+    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.1.0" />
   </ItemGroup>
 </Project>
