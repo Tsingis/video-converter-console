@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using CommandLine;
 using Microsoft.Extensions.Configuration;
 
@@ -48,7 +49,7 @@ namespace VideoConverter
                         var exitCode = HandleOptions(opt);
                         if (exitCode != ExitCode.Error)
                         {
-                            HandleConvert();
+                            HandleConvert().Wait();
                         }
                     });
                 parserResult.WithNotParsed(err =>
@@ -109,24 +110,24 @@ namespace VideoConverter
             return ExitCode.OK;
         }
 
-        private static void HandleConvert()
+        private static async Task HandleConvert()
         {
             try
             {
                 string output = String.Empty;
                 if (Uri.IsWellFormedUriString(_inputFile, UriKind.RelativeOrAbsolute))
                 {
-                    var downloadPath = Utility.DownloadFileAsync(_inputFile).Result;
+                    var downloadPath = await Utility.DownloadFileAsync(_inputFile); ;
 
                     if (File.Exists(downloadPath))
                     {
-                        output = Converter.ConvertVideoAsync(downloadPath, _outputDir, _outputFormat).Result;
+                        output = await Converter.ConvertVideoAsync(downloadPath, _outputDir, _outputFormat);
                         File.Delete(downloadPath);
                     }
                 }
                 else
                 {
-                    output = Converter.ConvertVideoAsync(_inputFile, _outputDir, _outputFormat).Result;
+                    output = await Converter.ConvertVideoAsync(_inputFile, _outputDir, _outputFormat);
                 }
 
                 Console.WriteLine($"Successfully conversed file {output}");

@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Xunit;
 using VideoConverter;
 
@@ -12,13 +13,12 @@ namespace Tests
         [Theory]
         [InlineData("example.mp4", VideoFormat.Webm)]
         [InlineData("example2.webm", VideoFormat.Mp4)]
-        public void ConversionIsSuccessful(string inputFile, string outputFormat)
+        public async Task ConversionIsSuccessful(string inputFile, string outputFormat)
         {
             var inputFilePath = Path.Join(TestVideoPath, inputFile);
             var outputFileDir = Path.Join(Environment.CurrentDirectory, TestVideoPath);
 
-            var outputFilePath = Converter.ConvertVideoAsync(inputFilePath, outputFileDir, outputFormat).Result;
-
+            var outputFilePath = await Converter.ConvertVideoAsync(inputFilePath, outputFileDir, outputFormat);
             var fileExists = File.Exists(outputFilePath);
 
             Assert.True(fileExists);
@@ -26,10 +26,10 @@ namespace Tests
         }
 
         [Fact]
-        public void DownloadIsSuccessful()
+        public async Task DownloadIsSuccessful()
         {
             var url = "https://tinyurl.com/yw6vak3d";
-            var downloadedFile = Utility.DownloadFileAsync(url).Result;
+            var downloadedFile = await Utility.DownloadFileAsync(url);
 
             var fileExists = File.Exists(downloadedFile);
 
