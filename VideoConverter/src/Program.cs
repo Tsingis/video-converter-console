@@ -62,7 +62,7 @@ namespace VideoConverter
 
         private static ExitCode HandleOptions(Options options)
         {
-            if (options.OutputFormat != null)
+            if (options.OutputFormat is not null)
             {
                 if (!VideoFormat.IsSupportedVideoFormat(options.OutputFormat))
                 {
@@ -102,7 +102,7 @@ namespace VideoConverter
                 _inputFile = options.InputFile;
             }
 
-            if (options.OutputPath != null)
+            if (options.OutputPath is not null)
             {
                 _outputDir = options.OutputPath;
             }
