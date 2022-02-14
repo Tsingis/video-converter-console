@@ -7,7 +7,6 @@ namespace Tests
 {
     public class UtilityTests
     {
-
         [Fact]
         public async Task TestDownload()
         {
@@ -27,11 +26,11 @@ namespace Tests
         [InlineData("http://www.localhost.com", true)]
         [InlineData("www.localhost.com", false)]
         [InlineData("localhost.com", false)]
+        [InlineData("localhost", false)]
         [InlineData(@"C:\Users\User\Videos", false)]
-        public void TestValidUrl(string url, bool expected)
+        public void TestValidUrl(string url, bool isValid)
         {
-            var success = Utility.IsValidUrl(url);
-            Assert.Equal(expected, success);
+            Assert.Equal(isValid, Utility.IsValidUrl(url));
         }
     }
 }

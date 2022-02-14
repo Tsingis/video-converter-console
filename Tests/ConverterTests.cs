@@ -8,7 +8,7 @@ namespace Tests
 {
     public class ConverterTests
     {
-        private readonly string TestVideoPath = "Testvideos";
+        const string TestVideoPath = "Testvideos";
 
         [Theory]
         [InlineData("example.mp4", VideoFormat.Webm)]
