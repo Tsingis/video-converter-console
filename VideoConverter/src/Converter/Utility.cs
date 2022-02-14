@@ -30,13 +30,13 @@ namespace VideoConverter
                             }
                         }
 
-                        throw new HttpRequestException($"Status code: " + res.StatusCode);
+                        throw new HttpRequestException($"Status code: {res.StatusCode}");
                     }
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("Download failed. " + ex.Message);
+                throw new Exception("Download failed.", ex);
             }
         }
 
