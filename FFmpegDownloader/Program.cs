@@ -1,6 +1,5 @@
-using System.IO;
-using System.Xml.Linq;
 using System;
+using System.Threading.Tasks;
 using Xabe.FFmpeg.Downloader;
 
 
@@ -12,13 +11,13 @@ namespace FFmpeg.Downloader
         {
             var path = Environment.CurrentDirectory;
             Console.WriteLine($"Downloading FFmpeg executables to {path}");
-            DownloadFFmpegExecutables(path);
+            DownloadFFmpegExecutables(path).Wait();
             Console.WriteLine("Download finished.");
         }
 
-        private static void DownloadFFmpegExecutables(string destinationPath)
+        private async static Task DownloadFFmpegExecutables(string destinationPath)
         {
-            FFmpegDownloader.GetLatestVersion(FFmpegVersion.Full, destinationPath).Wait();
+            await FFmpegDownloader.GetLatestVersion(FFmpegVersion.Full, destinationPath);
         }
     }
 }
