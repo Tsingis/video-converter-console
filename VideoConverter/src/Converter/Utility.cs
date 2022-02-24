@@ -4,61 +4,60 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace VideoConverter
+namespace VideoConverter;
+
+public static class Utility
 {
-    public static class Utility
+    public static async Task<string> DownloadFileAsync(string fileUrl)
     {
-        public static async Task<string> DownloadFileAsync(string fileUrl)
+        try
         {
-            try
+            var url = new Uri(fileUrl);
+            var path = Path.GetTempPath();
+            var file = Path.GetFileName(url.LocalPath);
+            var downloadPath = Path.Join(path, file);
+
+            using (var client = new HttpClient())
             {
-                var url = new Uri(fileUrl);
-                var path = Path.GetTempPath();
-                var file = Path.GetFileName(url.LocalPath);
-                var downloadPath = Path.Join(path, file);
-
-                using (var client = new HttpClient())
+                var res = await client.GetAsync(url);
                 {
-                    var res = await client.GetAsync(url);
+                    if (res.IsSuccessStatusCode)
                     {
-                        if (res.IsSuccessStatusCode)
+                        using (var fs = new FileStream(downloadPath, FileMode.Create))
                         {
-                            using (var fs = new FileStream(downloadPath, FileMode.Create))
-                            {
-                                await res.Content.CopyToAsync(fs);
-                                return downloadPath;
-                            }
+                            await res.Content.CopyToAsync(fs);
+                            return downloadPath;
                         }
-
-                        throw new HttpRequestException($"Status code: {res.StatusCode}");
                     }
+
+                    throw new HttpRequestException($"Status code: {res.StatusCode}");
                 }
             }
-            catch (Exception ex)
-            {
-                throw new Exception("Download failed.", ex);
-            }
         }
-
-        public static bool IsValidUrl(string inputFilePath)
+        catch (Exception ex)
         {
-            Uri validUri;
-            return Uri.TryCreate(inputFilePath, UriKind.Absolute, out validUri) &&
-                (validUri.Scheme == Uri.UriSchemeHttp || validUri.Scheme == Uri.UriSchemeHttps);
+            throw new Exception("Download failed.", ex);
         }
+    }
 
-        public static string GetOutputFilepath(string inputFilePath, string outputDir, string outputFormat)
-        {
-            var inputFile = Path.GetFileName(inputFilePath);
-            var outputFilepath = Path.Join(outputDir, inputFile);
-            return Path.ChangeExtension(outputFilepath, outputFormat);
-        }
+    public static bool IsValidUrl(string inputFilePath)
+    {
+        Uri validUri;
+        return Uri.TryCreate(inputFilePath, UriKind.Absolute, out validUri) &&
+            (validUri.Scheme == Uri.UriSchemeHttp || validUri.Scheme == Uri.UriSchemeHttps);
+    }
 
-        public static bool FFmpegExecutablesExist(string targetDirectory)
-        {
-            var execs = new string[] { "ffmpeg.exe", "ffprobe.exe", "ffplay.exe" };
-            var files = Directory.GetFiles(targetDirectory).Select(Path.GetFileName);
-            return execs.All(x => files.Contains(x));
-        }
+    public static string GetOutputFilepath(string inputFilePath, string outputDir, string outputFormat)
+    {
+        var inputFile = Path.GetFileName(inputFilePath);
+        var outputFilepath = Path.Join(outputDir, inputFile);
+        return Path.ChangeExtension(outputFilepath, outputFormat);
+    }
+
+    public static bool FFmpegExecutablesExist(string targetDirectory)
+    {
+        var execs = new string[] { "ffmpeg.exe", "ffprobe.exe", "ffplay.exe" };
+        var files = Directory.GetFiles(targetDirectory).Select(Path.GetFileName);
+        return execs.All(x => files.Contains(x));
     }
 }

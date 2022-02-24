@@ -2,6 +2,8 @@ using System;
 using CommandLine;
 using CommandLine.Text;
 
+namespace VideoConverter;
+
 public class Options
 {
     [Option('i', "input", Required = true, HelpText = "The input file to convert.")]

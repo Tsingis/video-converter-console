@@ -3,27 +3,26 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace VideoConverter
+namespace VideoConverter;
+
+public static class VideoFormat
 {
-    public static class VideoFormat
+    public const string Mp4 = "mp4";
+    public const string Webm = "webm";
+    public const string Gif = "gif";
+
+    public static bool IsSupportedVideoFormat(string format)
     {
-        public const string Mp4 = "mp4";
-        public const string Webm = "webm";
-        public const string Gif = "gif";
+        var allowedFormats = typeof(VideoFormat).GetAllPublicConstantsValues<string>();
+        return allowedFormats.Contains(format);
+    }
 
-        public static bool IsSupportedVideoFormat(string format)
-        {
-            var allowedFormats = typeof(VideoFormat).GetAllPublicConstantsValues<string>();
-            return allowedFormats.Contains(format);
-        }
-
-        private static List<T> GetAllPublicConstantsValues<T>(this Type type)
-        {
-            return type
-                .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
-                .Where(x => x.IsLiteral && !x.IsInitOnly && x.FieldType == typeof(T))
-                .Select(x => (T)x.GetRawConstantValue())
-                .ToList();
-        }
+    private static List<T> GetAllPublicConstantsValues<T>(this Type type)
+    {
+        return type
+        .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+        .Where(x => x.IsLiteral && !x.IsInitOnly && x.FieldType == typeof(T))
+        .Select(x => (T)x.GetRawConstantValue())
+        .ToList();
     }
 }
