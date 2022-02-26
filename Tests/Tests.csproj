@@ -3,6 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
     <IsPackable>false</IsPackable>
+    <IsPublishable>false</IsPublishable>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\VideoConverter\VideoConverter.csproj" />

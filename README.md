@@ -30,16 +30,20 @@ Additional requirements:
 
 - [.NET 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) installed
 
-Create application executable:
+Run project:
 
 ```bash
-cd VideoConverter
-dotnet publish -o <target path>
+dotnet run --project <project>
+```
+
+Create project files:
+
+```bash
+dotnet publish -o <output path>
 ```
 
 Run tests:
 
 ```bash
-cd Tests
 dotnet test
 ```

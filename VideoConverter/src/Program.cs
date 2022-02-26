@@ -171,7 +171,6 @@ public class Program
     private static IConfiguration SetupConfig()
     {
         var builder = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("config.json", false);
 
         return builder.Build();
