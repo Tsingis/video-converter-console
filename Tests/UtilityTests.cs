@@ -10,7 +10,17 @@ public class UtilityTests
     [Fact]
     public async Task TestDownload()
     {
-        var url = "https://tinyurl.com/yw6vak3d";
+        var url = "https://github.com/Tsingis/video-converter-console/raw/main/Tests/Testvideos/example.mp4";
+        var downloadedFile = await Utility.DownloadFileAsync(url);
+
+        Assert.True(File.Exists(downloadedFile));
+        File.Delete(downloadedFile);
+    }
+
+    [Fact]
+    public async Task TestDownload2()
+    {
+        var url = "https://github.com/Tsingis/video-converter-console/raw/main/Tests/Testvideos/example2.webm";
         var downloadedFile = await Utility.DownloadFileAsync(url);
 
         Assert.True(File.Exists(downloadedFile));

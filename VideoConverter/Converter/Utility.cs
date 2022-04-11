@@ -19,7 +19,7 @@ public static class Utility
 
             using (var client = new HttpClient())
             {
-                var res = await client.GetAsync(url);
+                var res = await client.GetAsync(url, HttpCompletionOption.ResponseContentRead);
                 {
                     if (res.IsSuccessStatusCode)
                     {
