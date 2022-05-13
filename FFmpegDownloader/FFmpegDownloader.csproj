@@ -8,6 +8,6 @@
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.1.0" />
+    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.2.0" />
   </ItemGroup>
 </Project>
