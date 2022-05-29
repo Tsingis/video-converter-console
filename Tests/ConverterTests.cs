@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
+using FluentAssertions;
 using VideoConverter;
 
 namespace Tests;
@@ -20,7 +21,7 @@ public class ConverterTests
 
         var outputFilePath = await Converter.ConvertVideoAsync(inputFilePath, outputFileDir, outputFormat);
 
-        Assert.True(File.Exists(outputFilePath));
+        File.Exists(outputFilePath).Should().BeTrue();
         File.Delete(outputFilePath);
     }
 
@@ -31,6 +32,7 @@ public class ConverterTests
     [InlineData("wmv", false)]
     public void TestSupportedVideoFormat(string format, bool isSupported)
     {
-        Assert.Equal(isSupported, VideoFormat.IsSupportedVideoFormat(format));
+        var result = VideoFormat.IsSupportedVideoFormat(format);
+        result.Should().Be(isSupported);
     }
 }

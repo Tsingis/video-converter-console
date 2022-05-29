@@ -1,6 +1,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Xunit;
+using FluentAssertions;
 using VideoConverter;
 
 namespace Tests;
@@ -13,7 +14,7 @@ public class UtilityTests
         var url = "https://github.com/Tsingis/video-converter-console/raw/main/Tests/Testvideos/example.mp4";
         var downloadedFile = await Utility.DownloadFileAsync(url);
 
-        Assert.True(File.Exists(downloadedFile));
+        File.Exists(downloadedFile).Should().BeTrue();
         File.Delete(downloadedFile);
     }
 
@@ -23,7 +24,7 @@ public class UtilityTests
         var url = "https://github.com/Tsingis/video-converter-console/raw/main/Tests/Testvideos/example2.webm";
         var downloadedFile = await Utility.DownloadFileAsync(url);
 
-        Assert.True(File.Exists(downloadedFile));
+        File.Exists(downloadedFile).Should().BeTrue();
         File.Delete(downloadedFile);
     }
 
@@ -40,6 +41,7 @@ public class UtilityTests
     [InlineData(@"C:\Users\User\Videos", false)]
     public void TestValidUrl(string url, bool isValid)
     {
-        Assert.Equal(isValid, Utility.IsValidUrl(url));
+        var result = Utility.IsValidUrl(url);
+        result.Should().Be(isValid);
     }
 }
