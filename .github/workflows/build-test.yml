@@ -1,0 +1,25 @@
+name: build-and-test
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dotnet: ["7.0.x"]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup .NET ${{ matrix.dotnet }}
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build app
+        run: dotnet build
+      - name: Test
+        run: dotnet test
