@@ -1,3 +1,4 @@
+using System.IO;
 using System;
 using System.Threading.Tasks;
 using Xabe.FFmpeg.Downloader;
@@ -6,9 +7,9 @@ namespace FFmpeg.Downloader;
 
 public class Program
 {
-    public static void Main()
+    public static void Main(string[] args)
     {
-        var path = Environment.CurrentDirectory;
+        var path = args.Length > 0 && Directory.Exists(args[0]) ? args[0] : Environment.CurrentDirectory;
         Console.WriteLine($"Downloading FFmpeg executables to {path}");
         DownloadFFmpegExecutables(path).Wait();
         Console.WriteLine("Download finished.");
