@@ -8,22 +8,13 @@ namespace Tests;
 
 public class UtilityTests
 {
-    [Fact]
-    public async Task TestDownload()
+    [Theory]
+    [InlineData("https://github.com/Tsingis/video-converter-console/raw/main/Tests/Testvideos/example.mp4")]
+    [InlineData("https://github.com/Tsingis/video-converter-console/raw/main/Tests/Testvideos/example2.webm")]
+
+    public async Task TestDownload(string url)
     {
-        var url = "https://github.com/Tsingis/video-converter-console/raw/main/Tests/Testvideos/example.mp4";
         var downloadedFile = await Utility.DownloadFileAsync(url);
-
-        File.Exists(downloadedFile).Should().BeTrue();
-        File.Delete(downloadedFile);
-    }
-
-    [Fact]
-    public async Task TestDownload2()
-    {
-        var url = "https://github.com/Tsingis/video-converter-console/raw/main/Tests/Testvideos/example2.webm";
-        var downloadedFile = await Utility.DownloadFileAsync(url);
-
         File.Exists(downloadedFile).Should().BeTrue();
         File.Delete(downloadedFile);
     }
