@@ -9,8 +9,9 @@ namespace Tests;
 public class UtilityTests
 {
     [Theory]
-    [InlineData("https://github.com/Tsingis/video-converter-console/raw/main/Tests/Testvideos/example.mp4")]
-    [InlineData("https://github.com/Tsingis/video-converter-console/raw/main/Tests/Testvideos/example2.webm")]
+    [InlineData("https://github.com/Tsingis/video-converter-console/raw/main/Tests/Testvideos/example_mp4.mp4")]
+    [InlineData("https://github.com/Tsingis/video-converter-console/raw/main/Tests/Testvideos/example_webm.webm")]
+    [InlineData("https://github.com/Tsingis/video-converter-console/raw/main/Tests/Testvideos/example_gif.gif")]
 
     public async Task TestDownload(string url)
     {
