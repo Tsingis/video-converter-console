@@ -23,8 +23,8 @@ jobs:
         run: dotnet build
       - name: Download FFmpeg executables
         run: dotnet run --project FFmpegDownloader $GITHUB_WORKSPACE
-      - name: Set executables to path
+      - name: Set downloaded executables to PATH
         run: echo $GITHUB_WORKSPACE >> $GITHUB_PATH
         shell: bash
-      - name: Test
+      - name: Run tests
         run: dotnet test
