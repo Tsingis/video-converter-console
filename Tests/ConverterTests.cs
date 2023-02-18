@@ -12,8 +12,11 @@ public class ConverterTests
     const string TestVideoPath = "Testvideos";
 
     [Theory]
-    [InlineData("example.mp4", VideoFormat.Webm)]
-    [InlineData("example2.webm", VideoFormat.Mp4)]
+    [InlineData("example_mp4.mp4", VideoFormat.Webm)]
+    [InlineData("example_mp4.mp4", VideoFormat.Gif)]
+    [InlineData("example_webm.webm", VideoFormat.Mp4)]
+    [InlineData("example_webm.webm", VideoFormat.Gif)]
+    [InlineData("example_gif.gif", VideoFormat.Mp4)]
     public async Task TestConversion(string inputFile, string outputFormat)
     {
         var inputFilePath = Path.Join(TestVideoPath, inputFile);
