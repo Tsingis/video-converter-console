@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -13,9 +12,8 @@ public static class Utility
         try
         {
             var url = new Uri(fileUrl);
-            var path = Path.GetTempPath();
             var file = Path.GetFileName(url.LocalPath);
-            var downloadPath = Path.Join(path, file);
+            var downloadPath = Path.Join(Path.GetTempPath(), file);
 
             using (var client = new HttpClient())
             {
@@ -42,9 +40,8 @@ public static class Utility
 
     public static bool IsValidUrl(string inputFilePath)
     {
-        Uri validUri;
-        return Uri.TryCreate(inputFilePath, UriKind.Absolute, out validUri) &&
-            (validUri.Scheme == Uri.UriSchemeHttp || validUri.Scheme == Uri.UriSchemeHttps);
+        var success = Uri.TryCreate(inputFilePath, UriKind.Absolute, out Uri validUri);
+        return success && (validUri.Scheme == Uri.UriSchemeHttp || validUri.Scheme == Uri.UriSchemeHttps);
     }
 
     public static string GetOutputFilepath(string inputFilePath, string outputDir, string outputFormat)
@@ -52,12 +49,5 @@ public static class Utility
         var inputFile = Path.GetFileName(inputFilePath);
         var outputFilepath = Path.Join(outputDir, inputFile);
         return Path.ChangeExtension(outputFilepath, outputFormat);
-    }
-
-    public static bool FFmpegExecutablesExist(string targetDirectory)
-    {
-        var execs = new string[] { "ffmpeg.exe", "ffprobe.exe", "ffplay.exe" };
-        var files = Directory.GetFiles(targetDirectory).Select(Path.GetFileName);
-        return execs.All(x => files.Contains(x));
     }
 }

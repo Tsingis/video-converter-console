@@ -121,13 +121,13 @@ public class Program
 
                 if (File.Exists(downloadPath))
                 {
-                    output = await Converter.ConvertVideoAsync(downloadPath, _outputDir, _outputFormat);
+                    output = await Converter.ConvertAsync(downloadPath, _outputDir, _outputFormat);
                     File.Delete(downloadPath);
                 }
             }
             else
             {
-                output = await Converter.ConvertVideoAsync(_inputFile, _outputDir, _outputFormat);
+                output = await Converter.ConvertAsync(_inputFile, _outputDir, _outputFormat);
             }
 
             Console.WriteLine($"Successfully conversed file {output}");
