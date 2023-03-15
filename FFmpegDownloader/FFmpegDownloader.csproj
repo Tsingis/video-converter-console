@@ -3,11 +3,13 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>FFmpeg.Downloader</RootNamespace>
-    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PlatformTarget>anycpu</PlatformTarget>
     <PublishSingleFile>true</PublishSingleFile>
+    <PublishDir>..\publish</PublishDir>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.2.5" />
+    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.2.6" />
   </ItemGroup>
 </Project>

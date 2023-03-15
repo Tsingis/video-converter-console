@@ -4,14 +4,16 @@
     <TargetFramework>net7.0</TargetFramework>
     <RootNamespace>VideoConverter</RootNamespace>
     <ApplicationIcon>icon.ico</ApplicationIcon>
-    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PlatformTarget>anycpu</PlatformTarget>
     <PublishSingleFile>true</PublishSingleFile>
+    <PublishDir>..\publish</PublishDir>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.9.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-    <PackageReference Include="Xabe.FFmpeg" Version="5.2.5" />
+    <PackageReference Include="Xabe.FFmpeg" Version="5.2.6" />
     <Content Include="config.json" CopyToOutputDirectory="Always" />
   </ItemGroup>
 </Project>
