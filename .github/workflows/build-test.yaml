@@ -1,10 +1,11 @@
 name: build-and-test
-
 on:
   push:
     branches:
       - main
-
+  pull_request:
+    branches:
+      - main
 jobs:
   build:
     runs-on: windows-latest
@@ -12,7 +13,7 @@ jobs:
       matrix:
         dotnet: ["7.0.x"]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup .NET ${{ matrix.dotnet }}
         uses: actions/setup-dotnet@v3
         with:
@@ -26,5 +27,5 @@ jobs:
       - name: Set downloaded executables to PATH
         run: echo $GITHUB_WORKSPACE >> $GITHUB_PATH
         shell: bash
-      - name: Run tests
+      - name: Test
         run: dotnet test
