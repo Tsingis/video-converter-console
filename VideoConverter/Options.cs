@@ -1,4 +1,3 @@
-using System;
 using CommandLine;
 using CommandLine.Text;
 
@@ -19,8 +18,8 @@ public class Options
     {
         var helpText = HelpText.AutoBuild(result, h =>
         {
-            h.Heading = String.Empty;
-            h.Copyright = String.Empty;
+            h.Heading = string.Empty;
+            h.Copyright = string.Empty;
             h.AutoHelp = false;
             h.AutoVersion = false;
             return HelpText.DefaultParsingErrorsHandler(result, h);

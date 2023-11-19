@@ -36,7 +36,7 @@ public class Program
                 Environment.Exit((int)ExitCode.OK);
             }
 
-            if (!input.StartsWith("-i") && !String.IsNullOrEmpty(input))
+            if (!input.StartsWith("-i") && !string.IsNullOrEmpty(input))
             {
                 input = input.Insert(0, "-i");
             }
@@ -44,7 +44,7 @@ public class Program
             var options = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
             var parser = new Parser(with => with.HelpWriter = null);
             var parserResult = parser.ParseArguments<Options>(options);
-            parserResult.WithParsed<Options>(opt =>
+            parserResult.WithParsed(opt =>
                 {
                     var exitCode = HandleOptions(opt);
                     if (exitCode != ExitCode.Error)
@@ -73,7 +73,7 @@ public class Program
             _outputFormat = options.OutputFormat;
         }
 
-        if (!String.IsNullOrEmpty(options.InputFile))
+        if (!string.IsNullOrEmpty(options.InputFile))
         {
             bool validUrl = false;
             if (options.InputFile.StartsWith("http"))
@@ -114,7 +114,7 @@ public class Program
     {
         try
         {
-            string output = String.Empty;
+            string output = string.Empty;
             if (Uri.IsWellFormedUriString(_inputFile, UriKind.RelativeOrAbsolute))
             {
                 var downloadPath = await Utility.DownloadFileAsync(_inputFile); ;
@@ -153,7 +153,7 @@ public class Program
                 _defaultOutputDir = path;
             }
 
-            if (String.IsNullOrEmpty(_defaultOutputFormat) ||
+            if (string.IsNullOrEmpty(_defaultOutputFormat) ||
                 !VideoFormat.IsSupportedVideoFormat(_defaultOutputFormat))
             {
                 _defaultOutputFormat = VideoFormat.Mp4;

@@ -9,7 +9,7 @@ namespace VideoConverter;
 
 public static class Converter
 {
-    private static readonly string[] _executables = new string[] { "ffmpeg.exe", "ffprobe.exe", "ffplay.exe" };
+    private static readonly string[] _executables = ["ffmpeg.exe", "ffprobe.exe", "ffplay.exe"];
     private static readonly string _executablesPath = Environment.CurrentDirectory;
 
     public static async Task<string> ConvertAsync(string inputFilePath, string outputFileDir, string outputFormat)
@@ -24,22 +24,13 @@ public static class Converter
 
         try
         {
-            IConversion conversion;
-            switch (outputFormat)
+            IConversion conversion = outputFormat switch
             {
-                case VideoFormat.Mp4:
-                    conversion = await FFmpeg.Conversions.FromSnippet.ToMp4(inputFilePath, outputFilePath);
-                    break;
-                case VideoFormat.Webm:
-                    conversion = await FFmpeg.Conversions.FromSnippet.ToWebM(inputFilePath, outputFilePath);
-                    break;
-                case VideoFormat.Gif:
-                    conversion = await FFmpeg.Conversions.FromSnippet.ToGif(inputFilePath, outputFilePath, 1);
-                    break;
-                default:
-                    throw new VideoFormatException("Unsupported video format.");
-            }
-
+                VideoFormat.Mp4 => await FFmpeg.Conversions.FromSnippet.ToMp4(inputFilePath, outputFilePath),
+                VideoFormat.Webm => await FFmpeg.Conversions.FromSnippet.ToWebM(inputFilePath, outputFilePath),
+                VideoFormat.Gif => await FFmpeg.Conversions.FromSnippet.ToGif(inputFilePath, outputFilePath, 1),
+                _ => throw new VideoFormatException("Unsupported video format."),
+            };
             await conversion.Start();
             return outputFilePath;
         }
