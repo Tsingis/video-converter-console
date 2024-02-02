@@ -15,6 +15,13 @@ updates:
       time: "21:00"
       timezone: "Europe/Helsinki"
   - package-ecosystem: "nuget"
+    directory: "/FFmpegDownloader"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "21:00"
+      timezone: "Europe/Helsinki"
+  - package-ecosystem: "nuget"
     directory: "/Tests"
     schedule:
       interval: "weekly"
