@@ -1,11 +1,14 @@
 name: build-and-test
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
+    paths:
+      - "**.cs"
+      - "**.csproj"
+      - "!.github/**"
+      - ".github/workflows/build-test.yaml"
+  workflow_dispatch:
 jobs:
   build:
     runs-on: windows-latest
