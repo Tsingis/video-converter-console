@@ -1,4 +1,4 @@
-name: build-and-test
+name: test
 on:
   pull_request:
     branches:
@@ -6,11 +6,10 @@ on:
     paths:
       - "**.cs"
       - "**.csproj"
-      - "!.github/**"
-      - ".github/workflows/build-test.yaml"
+      - ".github/workflows/test.yaml"
   workflow_dispatch:
 jobs:
-  build:
+  test:
     runs-on: windows-latest
     strategy:
       matrix:
