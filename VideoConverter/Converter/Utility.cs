@@ -7,6 +7,8 @@ namespace VideoConverter;
 
 public static class Utility
 {
+    public static Func<HttpClient> HttpClientFactory { get; set; } = () => new HttpClient();
+
     public static async Task<string> DownloadFileAsync(string fileUrl)
     {
         try
@@ -15,21 +17,19 @@ public static class Utility
             var file = Path.GetFileName(url.LocalPath);
             var downloadPath = Path.Join(Path.GetTempPath(), file);
 
-            using (var client = new HttpClient())
+            using (var client = HttpClientFactory())
             {
                 var res = await client.GetAsync(url, HttpCompletionOption.ResponseContentRead);
+                if (res.IsSuccessStatusCode)
                 {
-                    if (res.IsSuccessStatusCode)
+                    using (var fs = new FileStream(downloadPath, FileMode.Create))
                     {
-                        using (var fs = new FileStream(downloadPath, FileMode.Create))
-                        {
-                            await res.Content.CopyToAsync(fs);
-                            return downloadPath;
-                        }
+                        await res.Content.CopyToAsync(fs);
+                        return downloadPath;
                     }
-
-                    throw new HttpRequestException($"Status code: {res.StatusCode}");
                 }
+
+                throw new HttpRequestException($"Status code: {res.StatusCode}");
             }
         }
         catch (Exception ex)
