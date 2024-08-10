@@ -47,6 +47,6 @@ public static class Converter
     private static bool FFmpegExecutablesExist(string targetDirectory)
     {
         var files = Directory.GetFiles(targetDirectory).Select(Path.GetFileName);
-        return _executables.All(x => files.Contains(x));
+        return Array.TrueForAll(_executables, x => files.Contains(x));
     }
 }

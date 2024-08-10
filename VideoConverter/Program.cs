@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace VideoConverter;
 
-public class Program
+public static class Program
 {
     private static string _inputFile;
     private static string _outputDir;
@@ -117,7 +117,7 @@ public class Program
             string output = string.Empty;
             if (Uri.IsWellFormedUriString(_inputFile, UriKind.RelativeOrAbsolute))
             {
-                var downloadPath = await Utility.DownloadFileAsync(_inputFile); ;
+                var downloadPath = await Utility.DownloadFileAsync(_inputFile);
 
                 if (File.Exists(downloadPath))
                 {
