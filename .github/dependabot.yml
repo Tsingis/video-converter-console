@@ -14,3 +14,8 @@ updates:
       day: "sunday"
       time: "21:00"
       timezone: "Europe/Helsinki"
+    groups:
+      ffmpeg:
+        patterns:
+          - "Xabe.FFmpeg"
+          - "Xabe.FFmpeg.Downloader"
