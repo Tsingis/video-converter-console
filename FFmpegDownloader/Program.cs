@@ -1,6 +1,3 @@
-using System.IO;
-using System;
-using System.Threading.Tasks;
 using Xabe.FFmpeg.Downloader;
 
 namespace FFmpeg.Downloader;

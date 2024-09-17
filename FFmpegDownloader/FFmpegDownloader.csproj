@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>FFmpeg.Downloader</RootNamespace>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <PlatformTarget>anycpu</PlatformTarget>
@@ -10,6 +9,6 @@
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.2.6" />
+    <PackageReference Include="Xabe.FFmpeg.Downloader" />
   </ItemGroup>
 </Project>

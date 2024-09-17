@@ -1,5 +1,3 @@
-using System;
-
 namespace VideoConverter;
 
 public class ConversionException : Exception
