@@ -1,5 +1,4 @@
 using System.Net;
-using FluentAssertions;
 using Moq;
 using Moq.Protected;
 using VideoConverter;
@@ -32,10 +31,10 @@ public class UtilityTests
 
         var downloadedFile = await Utility.DownloadFileAsync(url);
 
-        File.Exists(downloadedFile).Should().BeTrue();
+        Assert.True(File.Exists(downloadedFile));
 
         var downloadedContent = await File.ReadAllBytesAsync(downloadedFile);
-        downloadedContent.Should().Equal(content);
+        Assert.Equal(content, downloadedContent);
 
         File.Delete(downloadedFile);
     }
@@ -60,9 +59,9 @@ public class UtilityTests
         Utility.HttpClientFactory = () => httpClient;
 
         var exception = await Assert.ThrowsAsync<HttpRequestException>(async () => await Utility.DownloadFileAsync(url));
-        exception.Message.Should().Be("Download failed.");
-        exception.InnerException.Should().BeOfType<HttpRequestException>();
-        exception.InnerException.Message.Should().Contain("Status code: NotFound");
+        Assert.Equal("Download failed", exception.Message); ;
+        Assert.IsType<HttpRequestException>(exception.InnerException);
+        Assert.Contains("Status code: NotFound", exception.InnerException.Message);
     }
 
     [Theory]
@@ -79,6 +78,6 @@ public class UtilityTests
     public void TestValidUrl(string url, bool isValid)
     {
         var result = Utility.IsValidUrl(url);
-        result.Should().Be(isValid);
+        Assert.Equal(isValid, result);
     }
 }

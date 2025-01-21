@@ -29,7 +29,7 @@ public static class Utility
         }
         catch (Exception ex)
         {
-            throw new HttpRequestException("Download failed.", ex);
+            throw new HttpRequestException("Download failed", ex);
         }
     }
 

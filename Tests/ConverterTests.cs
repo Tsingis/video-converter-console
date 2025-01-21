@@ -1,5 +1,4 @@
 using Xunit;
-using FluentAssertions;
 using VideoConverter;
 
 namespace Tests;
@@ -21,7 +20,7 @@ public class ConverterTests
 
         var outputFilePath = await Converter.ConvertAsync(inputFilePath, outputFileDir, outputFormat);
 
-        File.Exists(outputFilePath).Should().BeTrue();
+        Assert.True(File.Exists(outputFilePath));
         File.Delete(outputFilePath);
     }
 
@@ -33,6 +32,6 @@ public class ConverterTests
     public void TestSupportedVideoFormat(string format, bool isSupported)
     {
         var result = VideoFormat.IsSupportedVideoFormat(format);
-        result.Should().Be(isSupported);
+        Assert.Equal(isSupported, result);
     }
 }

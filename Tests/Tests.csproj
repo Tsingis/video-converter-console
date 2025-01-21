@@ -5,7 +5,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\VideoConverter\VideoConverter.csproj" />
-    <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
     <PackageReference Include="xunit" />
