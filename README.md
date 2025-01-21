@@ -28,7 +28,7 @@ Configuration:
 
 Additional requirements:
 
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) installed
+- [.NET 9.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0) installed
 
 Run project:
 
