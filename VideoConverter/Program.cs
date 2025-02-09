@@ -1,5 +1,7 @@
 ﻿using CommandLine;
 using Microsoft.Extensions.Configuration;
+using VideoConverter.Common;
+using VideoConverter.Exceptions;
 
 namespace VideoConverter;
 
@@ -28,19 +30,20 @@ public static class Program
             Console.Write("\nType input (q to quit): ");
             var input = Console.ReadLine();
 
-            if (input.ToLower().Equals("q"))
+            if (input.ToLowerInvariant().Equals("q", StringComparison.InvariantCulture))
             {
                 Environment.Exit((int)ExitCode.OK);
+                break;
             }
 
-            if (!input.StartsWith("-i") && !string.IsNullOrEmpty(input))
+            if (!input.StartsWith("-i", StringComparison.InvariantCulture) && !string.IsNullOrEmpty(input))
             {
                 input = input.Insert(0, "-i");
             }
 
             var options = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
-            var parser = new Parser(with => with.HelpWriter = null);
-            var parserResult = parser.ParseArguments<Options>(options);
+            using var parser = new Parser(with => with.HelpWriter = null);
+            var parserResult = parser.ParseArguments<ConverterOptions>(options);
             parserResult.WithParsed(opt =>
                 {
                     var exitCode = HandleOptions(opt);
@@ -51,19 +54,19 @@ public static class Program
                 });
             parserResult.WithNotParsed(err =>
             {
-                var help = Options.HandleError(parserResult);
+                var help = ConverterOptions.HandleError(parserResult);
                 Console.WriteLine(help);
             });
         }
     }
 
-    private static ExitCode HandleOptions(Options options)
+    private static ExitCode HandleOptions(ConverterOptions options)
     {
         if (options.OutputFormat is not null)
         {
             if (!VideoFormat.IsSupportedVideoFormat(options.OutputFormat))
             {
-                Console.WriteLine($"Output format is not supported.");
+                Console.WriteLine("Output format is not supported.");
                 return ExitCode.Error;
             }
 
@@ -73,9 +76,9 @@ public static class Program
         if (!string.IsNullOrEmpty(options.InputFile))
         {
             bool validUrl = false;
-            if (options.InputFile.StartsWith("http"))
+            if (options.InputFile.StartsWith("http", StringComparison.InvariantCulture))
             {
-                validUrl = Utility.IsValidUrl(options.InputFile);
+                validUrl = Uri.IsWellFormedUriString(options.InputFile, UriKind.Absolute);
                 if (!validUrl)
                 {
                     Console.WriteLine("Input uri not well formed.");
@@ -89,8 +92,8 @@ public static class Program
                 return ExitCode.Error;
             }
 
-            var inputFormat = Path.GetExtension(options.InputFile).Replace(".", "");
-            if (inputFormat.Equals(_outputFormat))
+            var inputFormat = Path.GetExtension(options.InputFile).Replace(".", "", StringComparison.InvariantCulture);
+            if (inputFormat.Equals(_outputFormat, StringComparison.InvariantCulture))
             {
                 Console.WriteLine("Output and input formats are the same.");
                 return ExitCode.Error;
@@ -114,22 +117,26 @@ public static class Program
             string output = string.Empty;
             if (Uri.IsWellFormedUriString(_inputFile, UriKind.RelativeOrAbsolute))
             {
-                var downloadPath = await Utility.DownloadFileAsync(_inputFile);
+                var downloadPath = await Utility.DownloadFileAsync(new Uri(_inputFile)).ConfigureAwait(true);
 
                 if (File.Exists(downloadPath))
                 {
-                    output = await Converter.ConvertAsync(downloadPath, _outputDir, _outputFormat);
+                    output = await Converter.ConvertAsync(downloadPath, _outputDir, _outputFormat).ConfigureAwait(true);
                     File.Delete(downloadPath);
                 }
             }
             else
             {
-                output = await Converter.ConvertAsync(_inputFile, _outputDir, _outputFormat);
+                output = await Converter.ConvertAsync(_inputFile, _outputDir, _outputFormat).ConfigureAwait(true);
             }
 
             Console.WriteLine($"Successfully conversed file {output}");
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"Error in downloading file. {ex.Message}");
+        }
+        catch (ConversionException ex)
         {
             Console.WriteLine($"Error in conversion. {ex.Message}");
         }
@@ -140,7 +147,7 @@ public static class Program
         try
         {
             var config = SetupConfig();
-            _defaultOutputFormat = config.GetValue<string>("defaultOutputFormat").ToLower();
+            _defaultOutputFormat = config.GetValue<string>("defaultOutputFormat");
             _defaultOutputDir = config.GetValue<string>("defaultOutputDir");
 
             if (!Directory.Exists(_defaultOutputDir))

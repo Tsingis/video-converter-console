@@ -8,7 +8,21 @@
     <NuGetAudit>true</NuGetAudit>
     <NuGetAuditMode>all</NuGetAuditMode>
     <NuGetAuditLevel>low</NuGetAuditLevel>
+    <AnalysisMode>all</AnalysisMode>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+    <EnforeCodeStyleInBuild>true</EnforeCodeStyleInBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <EnableCodeAnalysis>true</EnableCodeAnalysis>
+    <NoWarn>CA1308;;CA1309;CA1515;CA1031;CA1303</NoWarn>
   </PropertyGroup>
+  <PropertyGroup Condition="$(MSBuildProjectName.EndsWith('Tests'))">
+    <NoWarn>$(NoWarn);CA1707</NoWarn>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' != '.dcproj'">
+    <PackageReference Include="SonarAnalyzer.CSharp">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 </Project>

@@ -11,7 +11,7 @@ public static class VideoFormat
     public static bool IsSupportedVideoFormat(string format)
     {
         var allowedFormats = typeof(VideoFormat).GetAllPublicConstantsValues<string>();
-        return allowedFormats.Contains(format);
+        return allowedFormats.Contains(format?.ToLowerInvariant());
     }
 
     private static List<T> GetAllPublicConstantsValues<T>(this Type type)

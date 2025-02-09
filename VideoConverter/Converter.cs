@@ -1,3 +1,5 @@
+using VideoConverter.Common;
+using VideoConverter.Exceptions;
 using Xabe.FFmpeg;
 using Xabe.FFmpeg.Exceptions;
 
@@ -22,12 +24,12 @@ public static class Converter
         {
             IConversion conversion = outputFormat switch
             {
-                VideoFormat.Mp4 => await FFmpeg.Conversions.FromSnippet.ToMp4(inputFilePath, outputFilePath),
-                VideoFormat.Webm => await FFmpeg.Conversions.FromSnippet.ToWebM(inputFilePath, outputFilePath),
-                VideoFormat.Gif => await FFmpeg.Conversions.FromSnippet.ToGif(inputFilePath, outputFilePath, 1),
+                VideoFormat.Mp4 => await FFmpeg.Conversions.FromSnippet.ToMp4(inputFilePath, outputFilePath).ConfigureAwait(true),
+                VideoFormat.Webm => await FFmpeg.Conversions.FromSnippet.ToWebM(inputFilePath, outputFilePath).ConfigureAwait(true),
+                VideoFormat.Gif => await FFmpeg.Conversions.FromSnippet.ToGif(inputFilePath, outputFilePath, 1).ConfigureAwait(true),
                 _ => throw new VideoFormatException("Unsupported video format."),
             };
-            await conversion.Start();
+            await conversion.Start().ConfigureAwait(true);
             return outputFilePath;
         }
         catch (FFmpegNotFoundException)
@@ -36,7 +38,7 @@ public static class Converter
         }
         catch (Exception ex)
         {
-            throw new ConversionException("Conversion failed.", ex);
+            throw new Exceptions.ConversionException("Conversion failed.", ex);
         }
     }
 
