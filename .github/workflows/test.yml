@@ -24,11 +24,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build app
-        run: dotnet build
+        run: dotnet build --configuration Release --no-restore
       - name: Download FFmpeg executables
         run: dotnet run --project FFmpegDownloader $GITHUB_WORKSPACE
       - name: Set downloaded executables to PATH
         run: echo $GITHUB_WORKSPACE >> $GITHUB_PATH
         shell: bash
       - name: Test
-        run: dotnet test
+        run: dotnet test --configuration Release --no-restore --no-build
