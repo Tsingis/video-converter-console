@@ -18,7 +18,7 @@ public class ConverterTests
         var inputFilePath = Path.Join(TestVideoPath, inputFile);
         var outputFileDir = Path.Join(Environment.CurrentDirectory, TestVideoPath);
 
-        var outputFilePath = await Converter.ConvertAsync(inputFilePath, outputFileDir, outputFormat).ConfigureAwait(false);
+        var outputFilePath = await Converter.ConvertAsync(inputFilePath, outputFileDir, outputFormat).ConfigureAwait(true);
 
         Assert.True(File.Exists(outputFilePath));
         File.Delete(outputFilePath);

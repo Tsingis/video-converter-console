@@ -31,11 +31,11 @@ public class UtilityTests
         using var httpClient = new HttpClient(mockHandler.Object);
         Utility.HttpClientFactory = () => httpClient;
 
-        var downloadedFile = await Utility.DownloadFileAsync(url).ConfigureAwait(false);
+        var downloadedFile = await Utility.DownloadFileAsync(url).ConfigureAwait(true);
 
         Assert.True(File.Exists(downloadedFile));
 
-        var downloadedContent = await File.ReadAllBytesAsync(downloadedFile).ConfigureAwait(false);
+        var downloadedContent = await File.ReadAllBytesAsync(downloadedFile).ConfigureAwait(true);
         Assert.Equal(content, downloadedContent);
 
         File.Delete(downloadedFile);
@@ -66,7 +66,7 @@ public class UtilityTests
         Utility.HttpClientFactory = () => httpClient;
 
         var exception = await Assert.ThrowsAsync<HttpRequestException>(
-            async () => await Utility.DownloadFileAsync(url).ConfigureAwait(true)).ConfigureAwait(false);
+            async () => await Utility.DownloadFileAsync(url).ConfigureAwait(true)).ConfigureAwait(true);
 
         Assert.Equal("Download failed", exception.Message);
         Assert.IsType<HttpRequestException>(exception.InnerException);
