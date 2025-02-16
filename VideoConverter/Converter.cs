@@ -1,3 +1,4 @@
+using System.Globalization;
 using VideoConverter.Common;
 using VideoConverter.Exceptions;
 using Xabe.FFmpeg;
@@ -14,7 +15,7 @@ public static class Converter
     {
         if (FFmpegExecutablesExist(_executablesPath))
         {
-            FFmpeg.SetExecutablesPath(_executablesPath);
+            FFmpeg.SetExecutablesPath(_executablesPath, formatprovider: CultureInfo.InvariantCulture);
         }
 
         var outputFilePath = Utility.GetOutputFilepath(inputFilePath, outputFileDir, outputFormat);

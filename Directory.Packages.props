@@ -8,8 +8,8 @@
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.1" />
     <!-- To address transitive vulnerability -->
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageVersion Include="Xabe.FFmpeg" Version="5.2.6" />
-    <PackageVersion Include="Xabe.FFmpeg.Downloader" Version="5.2.6" />
+    <PackageVersion Include="Xabe.FFmpeg" Version="6.0.1" />
+    <PackageVersion Include="Xabe.FFmpeg.Downloader" Version="6.0.1" />
   </ItemGroup>
   <ItemGroup Label="Common">
     <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.6.0.109712"/>
