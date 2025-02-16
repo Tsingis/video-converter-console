@@ -4,7 +4,7 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
-      day: "wednesday"
+      day: "sunday"
       time: "21:00"
       timezone: "Europe/Helsinki"
   - package-ecosystem: "nuget"
@@ -19,3 +19,10 @@ updates:
         patterns:
           - "Xabe.FFmpeg"
           - "Xabe.FFmpeg.Downloader"
+  - package-ecosystem: "dotnet-sdk"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "21:00"
+      timezone: "Europe/Helsinki"
