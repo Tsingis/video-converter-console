@@ -8,8 +8,6 @@ on:
       - "**.csproj"
       - "**.props"
       - ".github/workflows/codeql.yml"
-  schedule:
-    - cron: "0 21 * * 0"
   workflow_dispatch:
 jobs:
   analyze:
