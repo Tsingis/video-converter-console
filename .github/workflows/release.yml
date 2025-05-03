@@ -1,0 +1,44 @@
+name: release
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "VideoConverter/**"
+      - "FFmpegDownloader/**"
+      - "**.props"
+      - ".github/workflows/release.yml"
+  workflow_dispatch:
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  TAG: v1.0.0
+  FILE: video-converter.zip
+  TITLE: Video Converter
+  NOTES: Download latest version
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: ./global.json
+      - name: Publish
+        run: |
+          dotnet publish --configuration Release
+      - name: Package
+        shell: pwsh
+        run: Compress-Archive -Path ./publish/* -DestinationPath $env:FILE -Force
+      - name: Release
+        shell: pwsh
+        run: |
+          gh release delete "$env:TAG" --yes --cleanup-tag
+          gh release create "$env:TAG" --latest --title "$env:TITLE" --notes "$env:NOTES"
+          gh release upload "$env:TAG" "$env:FILE" --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

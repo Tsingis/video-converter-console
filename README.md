@@ -1,4 +1,4 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Tsingis_video-converter-console&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Tsingis_video-converter-console)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Tsingis_video-converter-console&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Tsingis_video-converter-console) [![Release Status](https://github.com/tsingis/video-converter-console/actions/workflows/release.yml/badge.svg)](https://github.com/tsingis/video-converter-console/actions/workflows/release.yml)
 
 # Video converter
 
@@ -28,4 +28,4 @@ Configuration:
 
 Tools used:
 
--   .NET 9 SDK
+-   .NET SDK
